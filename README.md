@@ -1,5 +1,6 @@
 ## Silver Computing Raspberry
 Repositori del codice che va sulla raspberry pi
+
 Codice del server centrale di controllo.
 
 ## Motivazione

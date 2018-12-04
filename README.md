@@ -1,36 +1,24 @@
 ## Silver Computing Raspberry
-Repositori del codice che va sulla raspberry pi
-
 Codice del server centrale di controllo.
 
 ## Motivazione
 
 Mhe fatta questa repo si comincia a fare qualcosa
 
-## Installazione
+## Getting Started
 
-```Java
-// TODO: Installazione :|
-// FIXME: Non ancora implementato
-```
+## Prerequisiti
+
+## Installazione
 
 ## API Reference
 
-```Java
-// TODO:  documentare l'api per la comunicazione con il cient
-```
-
 ## Tests
 
-```Java
-// TODO: Sviluppare un modo per testare il codice
-```
+## Authors
 
-## Contributors
-
-* **Ernesto Montada** - *Doing stuff* - [n4y0n](https://github.com/n4y0n)
-* **Davide Gabrielli** - *Doing stuff* - [davegabe](https://github.com/davegabe)
-* **Altra gente che non trovo su github ma che aggiungerò dopo** - *Inscrivetevi* - [Click Me](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
+* **Ernesto Montada** -  [n4y0n](https://github.com/n4y0n)
+* **Davide Gabrielli** - [davegabe](https://github.com/davegabe)
 
 ## License
 

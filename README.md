@@ -30,7 +30,7 @@ Mhe fatta questa repo si comincia a fare qualcosa
 
 * **Ernesto Montada** - *Doing stuff* - [n4y0n](https://github.com/n4y0n)
 * **Davide Gabrielli** - *Doing stuff* - [davegabe](https://github.com/davegabe)
-* **Altra gente che non trovo su github ma che aggiungerò dopo** - *Inscrivetevi* - [Unicorni](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
+* **Altra gente che non trovo su github ma che aggiungerò dopo** - *Inscrivetevi* - [Click Me](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
 
 ## License
 

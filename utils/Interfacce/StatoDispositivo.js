@@ -1,3 +1,5 @@
+//@ts-check
+
 class StatoDispositivo {
   constructor(state) {
     this._state = state;

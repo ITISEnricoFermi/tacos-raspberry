@@ -44,7 +44,7 @@ exports.Logout = async (req, res) => {
   let token = req.header("x-auth");
 
   try {
-    let ltoken = await SecurityService.Logout(token);
+    await SecurityService.Logout(token);
     res.json({
       status: 200,
       message: "Succesfully loged out!"

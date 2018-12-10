@@ -1,6 +1,5 @@
 // @ts-check
 const app = require("../api");
-const debug = require("debug")("channer:server");
 const http = require("http");
 
 const port = normalizePort(process.env.PORT || "3000");
@@ -51,6 +50,5 @@ function onError(error) {
 function onListening() {
   let addr = server.address();
   let bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
-  debug("Listening on " + bind);
-  console.log(`Listening on port ${app.get("port")}`);
+  console.log(`Listening on ${bind}`);
 }

@@ -9,7 +9,7 @@ const index = require("./routes/index");
 const users = require("./routes/users");
 const api = require("./routes/api");
 const security = require("./controllers/security");
-const { mongoose } = require("./db/mongoose");
+//const { mongoose } = require("./db/mongoose");
 
 const app = express();
 
@@ -42,7 +42,7 @@ app.use("/api", api);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
-  var err = new Error("Not Found");
+  let err = new Error("Not Found");
   // @ts-ignore
   err.status = 404;
   next(err);

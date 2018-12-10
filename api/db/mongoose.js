@@ -2,7 +2,7 @@
 const bluebird = require("bluebird");
 const mongoose = require("mongoose");
 mongoose.Promise = bluebird;
-const database = "mongodb://127.0.0.1:27017/chan-test";
+const database = "mongodb://host:port/db";
 console.log("Connecting to database...");
 mongoose
   .connect(database)

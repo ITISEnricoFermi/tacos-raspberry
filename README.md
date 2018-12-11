@@ -1,4 +1,5 @@
-## Silver Computing Raspberry
+# <center>Silver Computing Raspberry
+
 Codice del server centrale di controllo.
 
 ## Motivazione
@@ -17,8 +18,8 @@ Mhe fatta questa repo si comincia a fare qualcosa
 
 ## Authors
 
-* **Ernesto Montada** -  [n4y0n](https://github.com/n4y0n)
-* **Davide Gabrielli** - [davegabe](https://github.com/davegabe)
+- **Ernesto Montada** - [n4y0n](https://github.com/n4y0n)
+- **Davide Gabrielli** - [davegabe](https://github.com/davegabe)
 
 ## License
 

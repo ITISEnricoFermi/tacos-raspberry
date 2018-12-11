@@ -5,10 +5,11 @@ const { User } = require("../models/user");
 
 exports.authenticate = async (req, res, next) => {
   let nonSecurePaths = ["/users", "/users/"];
+
   if (_.indexOf(nonSecurePaths, req.path) !== -1) return next();
+
   if (req.method === "OPTIONS") return next();
   let token = req.header("x-auth");
-  console.log(token);
   try {
     // @ts-ignore
     let user = await User.findByToken(token);

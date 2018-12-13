@@ -1,4 +1,4 @@
-# <center>Silver Computing Raspberry</center>
+# Silver Computing Raspberry
 
 Codice del server centrale di controllo.
 
@@ -20,6 +20,8 @@ Mhe fatta questa repo si comincia a fare qualcosa
 
 - **Ernesto Montada** - [n4y0n](https://github.com/n4y0n)
 - **Davide Gabrielli** - [davegabe](https://github.com/davegabe)
+- **[]** - []()
+- **[]** - []()
 
 ## License
 

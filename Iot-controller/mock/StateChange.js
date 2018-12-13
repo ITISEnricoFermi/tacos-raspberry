@@ -17,6 +17,7 @@ class StateChange {
    */
   send(id, state) {
     console.log("[" + id.toString(16) + "] Sending...", state.state);
+    return true;
   }
 }
 

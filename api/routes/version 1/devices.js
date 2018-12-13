@@ -2,7 +2,8 @@
 const express = require("express");
 const {
   getDevices,
-  getDevice
+  getDevice,
+  changeState
 } = require("../../controllers/version 1/devices");
 
 const router = express.Router();
@@ -10,10 +11,6 @@ const router = express.Router();
 router.get("/", getDevices);
 router.get("/:id", getDevice);
 
-router.put("/:id/state/:state", (req, res) => {
-  res.json({
-    ok: "ok"
-  });
-});
+router.put("/:id/state/:state", changeState);
 
 module.exports = router;

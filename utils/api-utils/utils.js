@@ -1,18 +1,4 @@
-// @ts-check
-const app = require("../api");
-const http = require("http");
-
-const port = normalizePort(process.env.PORT || "3000");
-
-app.set("port", port);
-
-const server = http.createServer(app);
-
-server.listen(port);
-server.on("error", onError);
-server.on("listening", onListening);
-
-function normalizePort(val) {
+exports.normalizePort = val => {
   let port = parseInt(val, 10);
 
   if (isNaN(port)) {
@@ -24,9 +10,9 @@ function normalizePort(val) {
   }
 
   return false;
-}
+};
 
-function onError(error) {
+exports.onError = error => {
   if (error.syscall !== "listen") {
     throw error;
   }
@@ -45,10 +31,4 @@ function onError(error) {
     default:
       throw error;
   }
-}
-
-function onListening() {
-  let addr = server.address();
-  let bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
-  console.log(`Listening on ${bind}`);
-}
+};

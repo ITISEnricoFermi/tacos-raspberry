@@ -1,4 +1,4 @@
-# <center>Silver Computing Raspberry
+# <center>Silver Computing Raspberry</center>
 
 Codice del server centrale di controllo.
 

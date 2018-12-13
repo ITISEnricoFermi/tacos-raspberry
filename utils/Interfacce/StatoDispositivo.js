@@ -6,6 +6,12 @@ class StatoDispositivo {
   }
 
   get state() {
+    if (this._state === "Off") {
+      return 0;
+    }
+    if (this._state === "On") {
+      return 1;
+    }
     return this._state;
   }
 
@@ -34,6 +40,14 @@ class StatoDispositivo {
   }
   static get Unknow() {
     return new StatoDispositivo("Unknow");
+  }
+
+  static get Off() {
+    return new StatoDispositivo("Off");
+  }
+
+  static get On() {
+    return new StatoDispositivo("On");
   }
 }
 

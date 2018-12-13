@@ -1,10 +1,10 @@
 //@ts-check
 const _ = require("lodash");
-const SecurityService = require("../services/security");
-const { User } = require("../models/user");
+const SecurityService = require("../../services/security");
+const { User } = require("../../models/user");
 
 exports.authenticate = async (req, res, next) => {
-  let nonSecurePaths = ["/users", "/users/"];
+  let nonSecurePaths = ["/api/v1/users", "/api/v1/users/"];
 
   if (_.indexOf(nonSecurePaths, req.path) !== -1) return next();
 
@@ -34,10 +34,7 @@ exports.Signin = async (req, res) => {
       token
     });
   } catch (e) {
-    res.status(400).json({
-      status: 400,
-      message: e.message
-    });
+    handleInternalError(res, e);
   }
 };
 
@@ -51,10 +48,7 @@ exports.Logout = async (req, res) => {
       message: "Succesfully loged out!"
     });
   } catch (e) {
-    res.json({
-      status: 400,
-      message: e.message
-    });
+    handleInternalError(res, e);
   }
 };
 
@@ -67,9 +61,13 @@ exports.Login = async (req, res) => {
       token
     });
   } catch (e) {
-    res.json({
-      status: 400,
-      message: e.message
-    });
+    handleInternalError(res, e);
   }
 };
+
+function handleInternalError(res, e) {
+  res.json({
+    status: 400,
+    message: res.app.get("env") === "development" ? e.message : ""
+  });
+}

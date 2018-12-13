@@ -3,7 +3,7 @@
 // Start API
 {
   const { normalizePort, onError } = require("../utils/api-utils/utils");
-  const app = require("../api/api");
+  const app = require("../api/app");
   const http = require("http");
 
   const port = normalizePort(process.env.PORT || "3000");

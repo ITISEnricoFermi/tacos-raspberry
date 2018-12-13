@@ -1,6 +1,6 @@
 //@ts-check
 
-class StatoDispositivo {
+class DeviceState {
   constructor(state) {
     this._state = state;
   }
@@ -22,35 +22,36 @@ class StatoDispositivo {
   /**
    * Crea uno stato custom
    * @param {string} state
-   * @returns {StatoDispositivo} uno stato
-   * @default StatoDispositivo.Unknow
+   * @returns {DeviceState} uno stato
+   * @default DeviceState.Unknow
    */
   newState(state = "Unknow") {
-    return new StatoDispositivo(state);
+    return new DeviceState(state);
   }
 
   static get None() {
-    return new StatoDispositivo("None");
+    return new DeviceState("None");
   }
   static get Ok() {
-    return new StatoDispositivo("Ok");
+    return new DeviceState("Ok");
   }
   static get Error() {
-    return new StatoDispositivo("Error");
+    return new DeviceState("Error");
   }
   static get Unknow() {
-    return new StatoDispositivo("Unknow");
+    return new DeviceState("Unknow");
   }
-
   static get Off() {
-    return new StatoDispositivo("Off");
+    return new DeviceState("Off");
   }
-
   static get On() {
-    return new StatoDispositivo("On");
+    return new DeviceState("On");
+  }
+  static get Busy() {
+    return new DeviceState("Busy");
   }
 }
 
 module.exports = {
-  StatoDispositivo
+  DeviceState
 };

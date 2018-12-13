@@ -6,9 +6,8 @@ const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 
 const index = require("./routes/index");
-const users = require("./routes/users");
 const api = require("./routes/api");
-const security = require("./controllers/security");
+const security = require("./controllers/version 1/security");
 //const { mongoose } = require("./db/mongoose");
 
 const app = express();
@@ -33,11 +32,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use(security.authenticate);
+//app.use(security.authenticate);
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", index);
-app.use("/users", users);
 app.use("/api", api);
 
 // catch 404 and forward to error handler

@@ -1,11 +1,11 @@
 // @ts-check
-const { StatoDispositivo } = require("./StatoDispositivo");
+const { DeviceState } = require("./DeviceState");
 
 /**
  * Dispositivi di base
  */
-class IDispositivo {
-  constructor({ id = 0xdeadbeef, stato = StatoDispositivo.None } = {}) {
+class IDevice {
+  constructor({ id = 0xdeadbeef, stato = DeviceState.None } = {}) {
     /**
      * Mai usare _id usare id
      */
@@ -29,8 +29,8 @@ class IDispositivo {
    * Stato del dispositivo
    */
   set state(st) {
-    if (st instanceof StatoDispositivo) this._stato = st;
+    if (st instanceof DeviceState) this._stato = st;
   }
 }
 
-module.exports = { IDispositivo };
+module.exports = { IDevice };

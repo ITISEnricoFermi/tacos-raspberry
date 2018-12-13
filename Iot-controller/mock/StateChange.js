@@ -1,5 +1,5 @@
 // @ts-check
-const { StatoDispositivo } = require("../../utils/Interfacce/StatoDispositivo");
+const { DeviceState } = require("../../utils/Interfacce/DeviceState");
 
 /**
  * mock
@@ -13,7 +13,7 @@ class StateChange {
 
   /**
    * @param {number} id
-   * @param {StatoDispositivo} state
+   * @param {DeviceState} state
    */
   send(id, state) {
     console.log("[" + id.toString(16) + "] Sending...", state.state);

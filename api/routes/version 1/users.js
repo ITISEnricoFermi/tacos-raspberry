@@ -4,8 +4,8 @@ const router = express.Router();
 
 const SecurityController = require("../../controllers/version 1/security");
 
-router.put("/", SecurityController.Signin);
-router.post("/", SecurityController.Login);
-router.delete("/", SecurityController.Logout);
+router.put("/login", SecurityController.Login);
+router.delete("/logout", SecurityController.Logout);
+router.post("/", SecurityController.Signin);
 
 module.exports = router;

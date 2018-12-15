@@ -17,7 +17,7 @@ const server = http.createServer(app);
 
 server.listen(port);
 
-server.on("error", onError.bind(port));
+server.on("error", onError);
 
 server.on("listening", () => {
   let addr = server.address();
@@ -44,7 +44,7 @@ function onError(error) {
     throw error;
   }
 
-  let bind = typeof this === "string" ? "Pipe " + this : "Port " + this;
+  let bind = typeof port === "string" ? "Pipe " + port : "Port " + port;
 
   switch (error.code) {
     case "EACCES":

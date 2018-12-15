@@ -1,10 +1,10 @@
 //@ts-check
-const _ = require("lodash");
-const { getall, getstate } = require("../../../Iot-controller/mock/devices");
-const { do_the_thing } = require("../../../Iot-controller/services/lights");
-const { DeviceType } = require("../../../utils/Interfacce/DeviceType");
+import _ from "lodash";
+import { getall, getstate } from "../../../../../Iot-controller/mock/devices";
+import { do_the_thing } from "../../../../../Iot-controller/services/lights";
+import { DeviceType } from "../../../../../Iot-controller/interfaces/DeviceType";
 
-exports.getDevices = async (req, res) => {
+export async function getDevices(req: any, res: any) {
   try {
     res.json({
       status: 200,
@@ -13,9 +13,9 @@ exports.getDevices = async (req, res) => {
   } catch (e) {
     handleInternalError(res, e);
   }
-};
+}
 
-exports.getDevice = async (req, res) => {
+export async function getDevice(req: any, res: any) {
   try {
     res.json({
       status: 200,
@@ -24,10 +24,10 @@ exports.getDevice = async (req, res) => {
   } catch (e) {
     handleInternalError(res, e);
   }
-};
+}
 
-exports.changeState = async (req, res) => {
-  let device = null;
+export async function changeState(req: any, res: any) {
+  let device;
 
   try {
     device = await getstate(req.params.id);
@@ -38,16 +38,16 @@ exports.changeState = async (req, res) => {
     });
   }
 
-  if (device.type === DeviceType.Binary.type) {
-    const r = await do_the_thing(parseInt(device.id), req.params.state);
+  if (device.type === DeviceType.Binary) {
+    const r = await do_the_thing(device.id, parseInt(req.params.state, 10));
     res.status(r ? 200 : 500).json({
       state: r ? 200 : 500,
       message: r ? "Ok" : "Error"
     });
   }
-};
+}
 
-function handleInternalError(res, e) {
+function handleInternalError(res: any, e: any) {
   res.status(500).json({
     status: 500,
     message: res.app.get("env") === "development" ? e.message : ""

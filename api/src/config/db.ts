@@ -1,6 +1,6 @@
 //@ts-check
-const bluebird = require("bluebird");
-const mongoose = require("mongoose");
+import bluebird from "bluebird";
+import mongoose from "mongoose";
 mongoose.Promise = bluebird;
 const database = "mongodb://host:port/db";
 console.log("Connecting to database...");
@@ -18,4 +18,4 @@ mongoose
     process.exit(0);
   });
 
-module.exports = { mongoose };
+export { mongoose };

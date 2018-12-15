@@ -1,5 +1,4 @@
-// @ts-check
-const { DeviceState } = require("../../utils/Interfacce/DeviceState");
+import { DeviceState } from "../interfaces/DeviceState";
 
 /**
  * mock
@@ -15,10 +14,10 @@ class StateChange {
    * @param {number} id
    * @param {DeviceState} state
    */
-  send(id, state) {
-    console.log("[" + id.toString(16) + "] Sending...", state.state);
+  send(id: number, state: DeviceState) {
+    console.log("[" + id.toString(16) + "] Sending...", state);
     return true;
   }
 }
 
-module.exports = { srvc: new StateChange() };
+export default new StateChange();

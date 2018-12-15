@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "strict": false,
+    "target": "es6",
+    "module": "commonjs",
+    "outDir": "./dist",
+    "watch": false,
+    "allowJs": true,
+    "checkJs": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": true,
+    "esModuleInterop": true
+  }
+}

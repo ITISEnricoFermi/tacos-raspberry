@@ -1,14 +1,13 @@
-//@ts-check
-const { User } = require("../models/user");
+import { User } from "./user.model";
 
-exports.Login = async (email, password) => {
+export async function login(email: string, password: string) {
   // @ts-ignore
   return await User.findByCredentials(email, password).then(user =>
     user.generateAuthToken()
   );
-};
+}
 
-exports.Register = async (email, password) => {
+export async function register(email: string, password: string) {
   let user;
 
   try {
@@ -22,9 +21,9 @@ exports.Register = async (email, password) => {
   } catch (e) {
     throw Error("Cant generate auth token!");
   }
-};
+}
 
-exports.Logout = async token => {
+export async function logout(token: string) {
   let user;
 
   try {
@@ -39,4 +38,4 @@ exports.Logout = async token => {
   } catch (e) {
     throw Error("Cannot logout!");
   }
-};
+}

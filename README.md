@@ -34,7 +34,7 @@ $ npm run start
 
 Tutte le routes del api le trovi [qui](https://itis-enrico-fermi.gitbook.io/domotica-fermi/)
 
-[Documentazione](https://itis-enrico-fermi.gitbook.io/domotica-fermi/
+[Documentazione](https://itis-enrico-fermi.gitbook.io/domotica-fermi/)
 
 ## Tests
 

@@ -35,7 +35,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "build-wach": "tsc -w",
+    "build-watch": "tsc -w",
     "install": "npm run build",
     "start": "node dist/bin/index.js"
   },

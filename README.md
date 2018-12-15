@@ -32,9 +32,9 @@ $ npm run start
 
 ## API Reference
 
-Tutte le routes del api le trovi [qui](https://itis-enrico-fermi.gitbook.io/domotica-fermi/)
+Tutte le routes del api le trovi [qui](https://documenter.getpostman.com/view/6166056/RzfmGTR8)
 
-[Documentazione](https://itis-enrico-fermi.gitbook.io/domotica-fermi/)
+[Documentazione](https://documenter.getpostman.com/view/6166056/RzfmGTR8)
 
 ## Tests
 

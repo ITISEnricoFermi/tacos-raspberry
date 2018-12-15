@@ -6,10 +6,11 @@ import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 
 import root from "./src/modules/root/root.route";
-//import security from "";
-//import { mongoose } from "./db/mongoose";
+import { mongoose } from "./src/config/db";
+mongoose;
 
 const app = express();
+app.set("env", "development");
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");

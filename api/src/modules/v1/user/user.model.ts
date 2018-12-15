@@ -1,32 +1,27 @@
 import { model, Schema, Model, Document, Query } from "mongoose";
-import validator from "validator";
 import jwt from "jsonwebtoken";
 import _ from "lodash";
 import bcrypt from "bcryptjs";
 
 export interface IUser {
-  email: string;
+  username: string;
   password: string;
 }
 
 export interface IUserModel extends IUser, Document {
   tokens: Array<{ access: string; token: string }>;
-  toJson(): { _id: string; email: string };
+  toJson(): { _id: string; username: string };
   generateAuthToken(): Promise<string>;
-  removeToken(): Query<any>;
+  removeToken(token: string): Query<any>;
 }
 
 export const UserSchema: Schema = new Schema({
-  email: {
+  username: {
     type: String,
     required: true,
     trim: true,
     minlength: 2,
-    unique: true,
-    validate: {
-      validator: (value: string) => validator.isEmail(value),
-      message: "{VALUE} is not a valid email."
-    }
+    unique: true
   },
   password: {
     type: String,
@@ -47,11 +42,11 @@ export const UserSchema: Schema = new Schema({
   ]
 });
 
-UserSchema.method("toJSON", function(): { _id: string; email: string } {
+UserSchema.method("toJSON", function(): { _id: string; username: string } {
   let user = this;
   let userObj = user.toObject();
 
-  return _.pick(userObj, ["_id", "email"]);
+  return _.pick(userObj, ["_id", "username"]);
 });
 
 UserSchema.method("generateAuthToken", function(): Promise<string> {
@@ -95,12 +90,12 @@ UserSchema.static("findByToken", function(token: string): Promise<IUserModel> {
 });
 
 UserSchema.static("findByCredentials", function(
-  email: string,
+  username: string,
   password: string
 ): IUserModel {
   let User = this;
 
-  return User.findOne({ email }).then((user: any) => {
+  return User.findOne({ username }).then((user: any) => {
     if (!user) return Promise.reject(new Error("User not Found!"));
     return bcrypt.compare(password, user.password).then((ok: boolean) => {
       if (!ok) return Promise.reject(new Error("Incorret password!"));

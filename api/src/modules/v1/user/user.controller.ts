@@ -3,11 +3,13 @@ import _ from "lodash";
 import * as Service from "./user.service";
 
 export async function signin(req: any, res: any) {
-  let body = _.pick(req.body, ["email", "password"]);
+  let body = _.pick(req.body, ["username", "password"]);
+
   try {
-    let token = await Service.register(body.email, body.password);
+    let token = await Service.register(body.username, body.password);
     res.header("x-auth", token).json({
       status: 200,
+      message: "Ok",
       token
     });
   } catch (e) {
@@ -22,19 +24,23 @@ export async function logout(req: any, res: any) {
     await Service.logout(token);
     res.json({
       status: 200,
-      message: "Succesfully loged out!"
+      message: "Succesfully logged out!"
     });
   } catch (e) {
-    handleInternalError(res, e);
+    res.state(400).json({
+      status: 400,
+      message: res.app.get("env") === "development" ? e.message : ""
+    });
   }
 }
 
 export async function login(req: any, res: any) {
-  let body = _.pick(req.body, ["email", "password"]);
+  let body = _.pick(req.body, ["username", "password"]);
   try {
-    let token = await Service.login(body.email, body.password);
+    let token = await Service.login(body.username, body.password);
     res.header("x-auth", token).json({
       status: 200,
+      message: "Ok",
       token
     });
   } catch (e) {
@@ -43,8 +49,8 @@ export async function login(req: any, res: any) {
 }
 
 function handleInternalError(res: any, e: any) {
-  res.json({
-    status: 400,
+  res.state(401).json({
+    status: 401,
     message: res.app.get("env") === "development" ? e.message : ""
   });
 }

@@ -1,30 +1,30 @@
-import { User } from "./user.model";
+import { User, IUserModel } from "./user.model";
 
-export async function login(email: string, password: string) {
+export async function login(username: string, password: string) {
   // @ts-ignore
-  return await User.findByCredentials(email, password).then(user =>
+  return await User.findByCredentials(username, password).then(user =>
     user.generateAuthToken()
   );
 }
 
-export async function register(email: string, password: string) {
-  let user;
+export async function register(username: string, password: string) {
+  let user: IUserModel;
 
   try {
-    user = await new User({ email, password }).save();
+    user = await new User({ username, password }).save();
   } catch (e) {
-    throw Error("Invalid or already used email!");
+    throw Error("Username already in used!");
   }
 
   try {
     return await user.generateAuthToken();
   } catch (e) {
-    throw Error("Cant generate auth token!");
+    throw Error("Cannot generate auth token!");
   }
 }
 
 export async function logout(token: string) {
-  let user;
+  let user: IUserModel;
 
   try {
     // @ts-ignore

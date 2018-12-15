@@ -2,8 +2,7 @@
 import bluebird from "bluebird";
 import mongoose from "mongoose";
 mongoose.Promise = bluebird;
-const database = "mongodb://host:port/db";
-console.log("Connecting to database...");
+const database = "mongodb://127.0.0.1:27017/db";
 mongoose
   .connect(database)
   .then(() => {
@@ -19,3 +18,4 @@ mongoose
   });
 
 export { mongoose };
+export default mongoose;

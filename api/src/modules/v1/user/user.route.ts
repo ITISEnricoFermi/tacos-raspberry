@@ -1,4 +1,3 @@
-//@ts-check
 import express from "express";
 import * as Controller from "./user.controller";
 

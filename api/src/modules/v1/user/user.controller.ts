@@ -27,7 +27,7 @@ export async function logout(req: any, res: any) {
       message: "Succesfully logged out!"
     });
   } catch (e) {
-    res.state(400).json({
+    res.status(400).json({
       status: 400,
       message: res.app.get("env") === "development" ? e.message : ""
     });
@@ -49,7 +49,7 @@ export async function login(req: any, res: any) {
 }
 
 function handleInternalError(res: any, e: any) {
-  res.state(401).json({
+  res.status(401).json({
     status: 401,
     message: res.app.get("env") === "development" ? e.message : ""
   });

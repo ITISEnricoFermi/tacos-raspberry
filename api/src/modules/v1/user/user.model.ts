@@ -92,7 +92,7 @@ UserSchema.static("findByToken", function(token: string): Promise<IUserModel> {
 UserSchema.static("findByCredentials", function(
   username: string,
   password: string
-): IUserModel {
+): Promise<IUserModel> {
   let User = this;
 
   return User.findOne({ username }).then((user: any) => {

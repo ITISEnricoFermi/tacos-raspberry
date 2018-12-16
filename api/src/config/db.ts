@@ -1,21 +1,53 @@
 //@ts-check
 import mongoose from "mongoose";
+import MongoMemoryServer from "mongodb-memory-server";
 mongoose.Promise = Promise;
 
-const database = "mongodb://127.0.0.1:27017/db";
-mongoose
-  .connect(database)
-  .then(() => {
-    console.log(
-      `Succesfully Connected to the Mongodb Database  at URL : ${database}`
-    );
-  })
-  .catch(() => {
-    console.log(
-      `Error Connecting to the Mongodb Database at URL : ${database}`
-    );
-    process.exit(0);
+if (process.env.DEBUG) {
+  const mongoServer = new MongoMemoryServer();
+
+  mongoServer.getConnectionString().then(mongoUri => {
+    const mongooseOpts = {
+      autoReconnect: true,
+      reconnectTries: Number.MAX_VALUE,
+      reconnectInterval: 1000
+    };
+
+    connectMongoose(mongoUri, mongooseOpts);
+
+    mongoose.connection.on("error", e => {
+      if (e.message.code === "ETIMEDOUT") {
+        console.log(e);
+        connectMongoose(mongoUri, mongooseOpts);
+      }
+    });
   });
+} else {
+  const database = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/db";
+  connectMongoose(database);
+}
+
+function connectMongoose(
+  databaseUri: string,
+  options?: mongoose.ConnectionOptions
+): void {
+  mongoose
+    .connect(
+      databaseUri,
+      options
+    )
+    .then(() => {
+      console.log(
+        `Succesfully Connected to the Mongodb Database  at URL : ${databaseUri}`
+      );
+    })
+    .catch(() => {
+      console.log(
+        `Error Connecting to the Mongodb Database at URL : ${databaseUri}`
+      );
+      process.exit(0);
+    });
+}
 
 export { mongoose };
 export default mongoose;

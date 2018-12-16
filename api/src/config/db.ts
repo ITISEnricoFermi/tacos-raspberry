@@ -10,7 +10,8 @@ if (process.env.DEBUG) {
     const mongooseOpts = {
       autoReconnect: true,
       reconnectTries: Number.MAX_VALUE,
-      reconnectInterval: 1000
+      reconnectInterval: 1000,
+      useNewUrlParser: true
     };
 
     connectMongoose(mongoUri, mongooseOpts);
@@ -24,7 +25,7 @@ if (process.env.DEBUG) {
   });
 } else {
   const database = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/db";
-  connectMongoose(database);
+  connectMongoose(database, { useNewUrlParser: true });
 }
 
 function connectMongoose(

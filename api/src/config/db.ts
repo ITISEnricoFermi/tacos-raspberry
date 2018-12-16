@@ -1,7 +1,7 @@
 //@ts-check
-import bluebird from "bluebird";
 import mongoose from "mongoose";
-mongoose.Promise = bluebird;
+mongoose.Promise = Promise;
+
 const database = "mongodb://127.0.0.1:27017/db";
 mongoose
   .connect(database)

@@ -5,11 +5,12 @@ import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 
 import { socket } from "./src/socket/socket";
+import { EventBus } from "./src/config/bus";
 import root from "./src/modules/root/root.route";
 import { mongoose } from "./src/config/db";
 mongoose;
 
-const app = express();
+export const app = express();
 app.set("env", process.env.DEBUG ? "development" : "release");
 
 app.use((req, res, next) => {
@@ -47,4 +48,4 @@ app.use((err: any, req: any, res: any, next: Function) => {
   res.status(err.status || 500).send();
 });
 
-export { app, socket };
+export { socket, EventBus };

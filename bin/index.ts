@@ -6,7 +6,7 @@
 
 // Setup API
 
-import { app, socket } from "../api/server";
+import { app, socket, EventBus } from "../api/server";
 
 import http from "http";
 
@@ -65,3 +65,7 @@ server.on("listening", () => {
   let bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
   console.log(`Listening on ${bind}`);
 });
+
+setInterval(() => {
+  EventBus.emit("device-state-change", { id: Math.random() });
+}, 1000);

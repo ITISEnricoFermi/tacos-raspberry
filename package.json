@@ -7,7 +7,6 @@
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.3",
     "body-parser": "~1.17.1",
-    "content-disposition": "^0.5.2",
     "cookie-parser": "~1.4.3",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.1.1",
@@ -15,8 +14,7 @@
     "mongoose": "^5.0.2",
     "mongoose-paginate": "^5.0.3",
     "morgan": "~1.8.1",
-    "socket.io": "^2.2.0",
-    "validator": "^9.3.0"
+    "socket.io": "^2.2.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
@@ -29,7 +27,8 @@
     "@types/mongodb": "^3.1.17",
     "@types/mongoose": "^5.3.5",
     "@types/morgan": "^1.7.35",
-    "@types/validator": "^9.4.4",
+    "@types/socket.io": "^2.1.2",
+    "cross-env": "^5.2.0",
     "nodemon": "^1.18.9",
     "typescript": "^3.2.2"
   },
@@ -37,7 +36,9 @@
     "build": "tsc",
     "build-watch": "tsc -w",
     "install": "npm run build",
-    "start": "node dist/bin/index.js"
+    "start": "node dist/bin/index.js",
+    "dev": "cross-env DEBUG=true node dist/bin/index.js",
+    "dev-watch": "cross-env DEBUG=true node_modules/.bin/nodemon dist/bin/index.js"
   },
   "repository": {
     "type": "git",

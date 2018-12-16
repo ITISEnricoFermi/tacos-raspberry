@@ -4,9 +4,10 @@
  * Entry point del server
  */
 
-// Start API
+// Setup API
 
-import { app } from "../api/server";
+import { app, socket } from "../api/server";
+
 import http from "http";
 
 const port = normalizePort(process.env.PORT || "3000");
@@ -14,16 +15,6 @@ const port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
 
 const server = http.createServer(app);
-
-server.listen(port);
-
-server.on("error", onError);
-
-server.on("listening", () => {
-  let addr = server.address();
-  let bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
-  console.log(`Listening on ${bind}`);
-});
 
 function normalizePort(val: string) {
   let port = parseInt(val, 10);
@@ -59,3 +50,18 @@ function onError(error) {
       throw error;
   }
 }
+
+// Setup socket
+
+socket(server);
+
+// Start listening for connections
+server.listen(port);
+
+server.on("error", onError);
+
+server.on("listening", () => {
+  let addr = server.address();
+  let bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
+  console.log(`Listening on ${bind}`);
+});

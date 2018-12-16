@@ -1,16 +1,16 @@
 // @ts-check
 import express from "express";
-import path from "path";
 import logger from "morgan";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 
+import { socket } from "./src/socket/socket";
 import root from "./src/modules/root/root.route";
 import { mongoose } from "./src/config/db";
 mongoose;
 
 const app = express();
-app.set("env", "development");
+app.set("env", process.env.DEBUG ? "development" : "release");
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -22,14 +22,10 @@ app.use((req, res, next) => {
   next();
 });
 
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger("dev"));
+app.use(logger(process.env.DEBUG ? "dev" : "common"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-
-//app.use(security.authenticate);
-app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/api", root);
 
@@ -51,4 +47,4 @@ app.use((err: any, req: any, res: any, next: Function) => {
   res.status(err.status || 500).send();
 });
 
-export { app };
+export { app, socket };

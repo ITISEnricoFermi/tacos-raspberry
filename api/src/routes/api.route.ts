@@ -1,6 +1,6 @@
 //@ts-check
 import express from "express";
-import v1 from "../v1/v1.route";
+import v1 from "./api/v1/v1";
 
 const router = express.Router();
 

@@ -1,36 +1,50 @@
-// @ts-check
 import express from "express";
 import logger from "morgan";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
+import socketIO from "socket.io";
+import http from "http";
+import cors from "cors";
 
-import { socket } from "./src/socket/socket";
+import { normalizePort } from "./src/utils/utils";
 import { EventBus } from "./src/config/bus";
-import root from "./src/modules/root/root.route";
-import { mongoose } from "./src/config/db";
-mongoose;
+import { authenticate } from "./src/middleware/auth";
+
+import api from "./src/routes/api.route";
+import login from "./src/routes/login/login.route";
+import logout from "./src/routes/logout/logout.route";
+
+const env = process.env.NODE_ENV || "development";
+const port = normalizePort(process.env.PORT || "3000");
 
 export const app = express();
-app.set("env", process.env.DEBUG ? "development" : "release");
+export const server = http.createServer(app);
+export const io = socketIO(server, { serveClient: env === "development" });
 
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, x-auth"
-  );
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  next();
-});
+app.set("env", env);
+if (env === "development") {
+  app.use(logger("dev"));
+}
 
-app.use(logger(process.env.DEBUG ? "dev" : "common"));
+app.use(
+  cors({
+    origin: "*",
+    credentials: true,
+    method: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    preflightContinue: false,
+    optionsSuccessStatus: 204
+  })
+);
+app.options("*", cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(authenticate);
 
-app.use("/api", root);
+app.use("/api", api);
+app.use("/login", login);
+app.use("/logout", logout);
 
-// catch 404 and forward to error handler
 app.use((req, res, next) => {
   let err = new Error("Not Found");
   // @ts-ignore
@@ -40,12 +54,51 @@ app.use((req, res, next) => {
 
 // error handler
 app.use((err: any, req: any, res: any, next: Function) => {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
-
-  // render the error page
+  if (req.app.get("env") === "development") {
+    console.error(err);
+  }
   res.status(err.status || 500).send();
 });
 
-export { socket, EventBus };
+server.on("error", error => {
+  //@ts-ignore
+  if (error.syscall !== "listen") {
+    throw error;
+  }
+
+  let bind = typeof port === "string" ? "Pipe " + port : "Port " + port;
+
+  //@ts-ignore
+  switch (error.code) {
+    case "EACCES":
+      console.error(bind + " requires elevated privileges");
+      process.exit(1);
+      break;
+    case "EADDRINUSE":
+      console.error(bind + " is already in use");
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+});
+
+server.on("listening", () => {
+  let addr = server.address();
+  let bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
+  console.log(`Listening on ${bind}`);
+});
+
+// Socket io stuff
+EventBus.on("device-state-change", dev => {
+  io.sockets.emit("device-state-change", dev);
+});
+
+io.on("connection", socket => {
+  socket.emit("READY");
+  socket.on("disconnecting", reason => {
+    console.log("Il socket si sta disconnettendo per:", reason);
+  });
+});
+
+server.listen(port);

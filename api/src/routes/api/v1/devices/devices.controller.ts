@@ -1,8 +1,6 @@
 //@ts-check
 import _ from "lodash";
-import { getall, getstate } from "../../../../../Iot-controller/mock/devices";
-import { do_the_thing } from "../../../../../Iot-controller/services/lights";
-import { DeviceType } from "../../../../../Iot-controller/interfaces/DeviceType";
+import { DeviceType, do_the_thing, getall, getstate } from "./devices.service";
 
 export async function getDevices(req: any, res: any) {
   try {

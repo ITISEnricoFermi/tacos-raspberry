@@ -6,6 +6,7 @@ import socketIO from "socket.io";
 import http from "http";
 import cors from "cors";
 
+import { config } from "./src/config/conf";
 import { normalizePort } from "./src/utils/utils";
 import { EventBus } from "./src/config/bus";
 
@@ -13,15 +14,15 @@ import api from "./src/routes/api.route";
 import login from "./src/routes/login/login.route";
 import logout from "./src/routes/logout/logout.route";
 
-const env = process.env.NODE_ENV || "development";
-const port = normalizePort(process.env.PORT || "3000");
+const node_env = config.node_env;
+const port = normalizePort(config.server_port);
 
 export const app = express();
 export const server = http.createServer(app);
-export const io = socketIO(server, { serveClient: env === "development" });
+export const io = socketIO(server, { serveClient: node_env === "development" });
 
-app.set("env", env);
-if (env === "development") {
+app.set("env", node_env);
+if (node_env === "development") {
   app.use(logger("dev"));
 }
 

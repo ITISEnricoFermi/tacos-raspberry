@@ -1,9 +1,10 @@
 //@ts-check
 import mongoose from "mongoose";
+import { config } from "./conf";
 import MongoMemoryServer from "mongodb-memory-server";
 mongoose.Promise = Promise;
 
-if (process.env.DEBUG) {
+if (config.in_memory_db) {
   const mongoServer = new MongoMemoryServer();
 
   mongoServer.getConnectionString().then(mongoUri => {
@@ -24,8 +25,7 @@ if (process.env.DEBUG) {
     });
   });
 } else {
-  const database = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/db";
-  connectMongoose(database, { useNewUrlParser: true });
+  connectMongoose(config.mongo_uri, { useNewUrlParser: true });
 }
 
 function connectMongoose(

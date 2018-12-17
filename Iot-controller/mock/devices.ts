@@ -1,5 +1,6 @@
 import { DeviceState } from "../interfaces/DeviceState";
 import { DeviceType } from "../interfaces/DeviceType";
+import IDevice from "../interfaces/IDevice";
 
 export function getall() {
   return [
@@ -14,10 +15,9 @@ export function getall() {
   ];
 }
 
-export async function getstate(id: number) {
+export async function getstate(id: number): Promise<IDevice> {
   return {
-    id: id,
-    type: DeviceType.Binary,
+    devid: id,
     state: DeviceState.Busy
   };
 }

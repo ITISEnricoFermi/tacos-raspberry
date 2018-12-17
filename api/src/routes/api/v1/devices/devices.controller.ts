@@ -1,11 +1,9 @@
 //@ts-check
 import _ from "lodash";
 import {
-  DeviceType,
   getDeviceState,
   changeDeviceState,
-  getAllActiveDevices,
-  findDeviceById
+  getAllActiveDevices
 } from "./devices.service";
 
 export async function getDevices(req: any, res: any) {
@@ -23,7 +21,7 @@ export async function getDevice(req: any, res: any) {
   try {
     res.json({
       status: 200,
-      result: await getDeviceState(req.params.id)
+      result: await getDeviceState(parseInt(req.params.id))
     });
   } catch (e) {
     handleInternalError(res, e);
@@ -31,26 +29,26 @@ export async function getDevice(req: any, res: any) {
 }
 
 export async function changeState(req: any, res: any) {
-  let device;
-
   try {
-    device = await findDeviceById(req.params.id);
-  } catch (err) {
-    return res.status(404).json({
-      status: 404,
-      result: "Device not found"
-    });
-  }
-
-  if (device.type === DeviceType.Binary) {
-    const r = await changeDeviceState(
-      device.id,
+    await changeDeviceState(
+      parseInt(req.params.id, 10),
       parseInt(req.params.state, 10)
     );
-    res.status(r ? 200 : 500).json({
-      state: r ? 200 : 500,
-      message: r ? "Ok" : "Error"
-    });
+    res.json({ state: 200, message: "Ok" });
+  } catch (e) {
+    switch (e.code) {
+      case 404:
+        res.status(404).json({
+          status: 404,
+          result: "Device not found"
+        });
+        break;
+      default:
+        res.status(500).json({
+          state: 500,
+          message: req.app.get("env") === "development" ? e.message : ""
+        });
+    }
   }
 }
 

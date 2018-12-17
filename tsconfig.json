@@ -9,6 +9,7 @@
     "checkJs": true,
     "strictNullChecks": true,
     "noUnusedLocals": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "resolveJsonModule": true
   }
 }

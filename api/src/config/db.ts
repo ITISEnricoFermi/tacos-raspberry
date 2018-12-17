@@ -1,21 +1,54 @@
 //@ts-check
-import bluebird from "bluebird";
 import mongoose from "mongoose";
-mongoose.Promise = bluebird;
-const database = "mongodb://127.0.0.1:27017/db";
-mongoose
-  .connect(database)
-  .then(() => {
-    console.log(
-      `Succesfully Connected to the Mongodb Database  at URL : ${database}`
-    );
-  })
-  .catch(() => {
-    console.log(
-      `Error Connecting to the Mongodb Database at URL : ${database}`
-    );
-    process.exit(0);
+import { config } from "./conf";
+import MongoMemoryServer from "mongodb-memory-server";
+mongoose.Promise = Promise;
+
+if (config.in_memory_db) {
+  const mongoServer = new MongoMemoryServer();
+
+  mongoServer.getConnectionString().then(mongoUri => {
+    const mongooseOpts = {
+      autoReconnect: true,
+      reconnectTries: Number.MAX_VALUE,
+      reconnectInterval: 1000,
+      useNewUrlParser: true
+    };
+
+    connectMongoose(mongoUri, mongooseOpts);
+
+    mongoose.connection.on("error", e => {
+      if (e.message.code === "ETIMEDOUT") {
+        console.log(e);
+        connectMongoose(mongoUri, mongooseOpts);
+      }
+    });
   });
+} else {
+  connectMongoose(config.mongo_uri, { useNewUrlParser: true });
+}
+
+function connectMongoose(
+  databaseUri: string,
+  options?: mongoose.ConnectionOptions
+): void {
+  mongoose
+    .connect(
+      databaseUri,
+      options
+    )
+    .then(() => {
+      console.log(
+        `Succesfully Connected to the Mongodb Database  at URL : ${databaseUri}`
+      );
+    })
+    .catch(() => {
+      console.log(
+        `Error Connecting to the Mongodb Database at URL : ${databaseUri}`
+      );
+      process.exit(0);
+    });
+}
 
 export { mongoose };
 export default mongoose;

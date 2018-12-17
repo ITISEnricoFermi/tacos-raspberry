@@ -4,7 +4,7 @@ import { DeviceState } from "./DeviceState";
  * Dispositivi di base
  */
 export interface IDevice {
-  id: number;
+  devid: number;
   state: DeviceState;
 }
 

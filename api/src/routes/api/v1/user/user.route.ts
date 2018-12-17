@@ -1,10 +1,11 @@
 import express from "express";
 import _ from "lodash";
 import * as Service from "./user.service";
+import { authenticate } from "../../../../middleware/auth";
 
 const router = express.Router();
 
-router.post("/", async (req: any, res: any) => {
+router.post("/", authenticate, async (req: any, res: any) => {
   let body = _.pick(req.body, ["username", "password"]);
 
   try {

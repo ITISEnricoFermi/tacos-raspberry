@@ -8,7 +8,6 @@ import cors from "cors";
 
 import { normalizePort } from "./src/utils/utils";
 import { EventBus } from "./src/config/bus";
-import { authenticate } from "./src/middleware/auth";
 
 import api from "./src/routes/api.route";
 import login from "./src/routes/login/login.route";
@@ -39,7 +38,6 @@ app.options("*", cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(authenticate);
 
 app.use("/api", api);
 app.use("/login", login);

@@ -1,13 +1,7 @@
 import _ from "lodash";
 import { User, IUserModel } from "../models/user";
 
-const nonSecurePaths = ["/login"];
 export async function authenticate(req: any, res: any, next: Function) {
-  if (_.indexOf(nonSecurePaths, req.path) !== -1) {
-    return next();
-  }
-
-  if (req.method === "OPTIONS") return next();
   let token = req.header("x-auth");
   try {
     // @ts-ignore

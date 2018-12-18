@@ -6,7 +6,7 @@ export async function register(username: string, password: string) {
   try {
     user = await new User({ username, password }).save();
   } catch (e) {
-    throw Error("Username already in used!");
+    throw e;
   }
 
   try {

@@ -1,7 +1,10 @@
 import { model, Schema, Model, Document, Query } from "mongoose";
+import { config } from "../config/conf";
 import jwt from "jsonwebtoken";
 import _ from "lodash";
 import bcrypt from "bcryptjs";
+
+const TOKEN_SALT: string = config.jwt_salt;
 
 export interface IUser {
   username: string;
@@ -53,7 +56,7 @@ UserSchema.method("generateAuthToken", function(): Promise<string> {
   let user: IUserModel = this;
   let access = "auth";
   let token = jwt
-    .sign({ _id: user._id.toHexString(), access }, "<<#[TheTokenSalt]#>>")
+    .sign({ _id: user._id.toHexString(), access }, TOKEN_SALT)
     .toString();
   user.tokens.push({ access, token });
   return user.save().then(() => token);
@@ -76,7 +79,7 @@ UserSchema.static("findByToken", function(token: string): Promise<IUserModel> {
   let decoded;
 
   try {
-    decoded = jwt.verify(token, "<<#[TheTokenSalt]#>>");
+    decoded = jwt.verify(token, TOKEN_SALT);
   } catch (e) {
     return Promise.reject(e);
   }

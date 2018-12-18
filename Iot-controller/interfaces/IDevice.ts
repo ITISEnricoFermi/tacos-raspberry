@@ -5,6 +5,7 @@ import { DeviceState } from "./DeviceState";
  */
 export interface IDevice {
   devid: number;
+  mac: string;
   state: DeviceState;
 }
 

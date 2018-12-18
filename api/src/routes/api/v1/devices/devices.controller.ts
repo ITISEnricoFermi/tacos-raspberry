@@ -34,7 +34,7 @@ export async function changeState(req: any, res: any) {
       parseInt(req.params.id, 10),
       parseInt(req.params.state, 10)
     );
-    res.json({ state: 200, message: "Ok" });
+    res.json({ state: 200, result: "Ok" });
   } catch (e) {
     switch (e.code) {
       case 404:
@@ -44,17 +44,22 @@ export async function changeState(req: any, res: any) {
         });
         break;
       default:
-        res.status(500).json({
-          state: 500,
-          message: req.app.get("env") === "development" ? e.message : ""
-        });
+        handleInternalError(res, e);
     }
   }
 }
 
 function handleInternalError(res: any, e: any) {
-  res.status(500).json({
-    status: 500,
-    message: res.app.get("env") === "development" ? e.message : ""
-  });
+  if (res.app.get("env") === "development") {
+    res.status(500).json({
+      status: 500,
+      message: e.message,
+      "stack-trace": e.stack
+    });
+  } else {
+    res.status(500).json({
+      status: 500,
+      message: "Oups, something went wrong!"
+    });
+  }
 }

@@ -1,23 +1,31 @@
 import { DeviceState } from "../interfaces/DeviceState";
 import { DeviceType } from "../interfaces/DeviceType";
-import IDevice from "../interfaces/IDevice";
 
-export function getall() {
+export function mock_devices() {
   return [
     {
+      devid: 0x23,
+      mac: "00:ff:ff:ff",
       type: DeviceType.Binary,
-      id: 0x23
+      state: DeviceState.Off
     },
     {
-      type: DeviceType.Modulable,
-      id: 0x32
+      devid: 0x32,
+      mac: "00:2f:ff:ff",
+      type: DeviceType.None,
+      state: DeviceState.Unknown
+    },
+    {
+      devid: 0x12,
+      mac: "00:ff:f2:ff",
+      type: DeviceType.Binary,
+      state: DeviceState.On
+    },
+    {
+      devid: 0x2,
+      mac: "00:ff:ff:fa",
+      type: DeviceType.None,
+      state: DeviceState.None
     }
   ];
-}
-
-export async function getstate(id: number): Promise<IDevice> {
-  return {
-    devid: id,
-    state: DeviceState.Busy
-  };
 }

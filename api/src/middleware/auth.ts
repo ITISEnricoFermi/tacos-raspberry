@@ -6,14 +6,14 @@ export async function authenticate(req: any, res: any, next: Function) {
   try {
     // @ts-ignore
     let user: IUserModel = await User.findByToken(token);
+
     if (!user) throw Error("User not found.");
-    req.user = user;
-    req.token = token;
+
     return next();
   } catch (err) {
     res.status(401).json({
       status: 401,
-      message: "Unauthorized"
+      message: `Unauthorized ${err.message}`
     });
   }
 }

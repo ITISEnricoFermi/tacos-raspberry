@@ -1,13 +1,12 @@
 //@ts-check
 import express from "express";
-import { authenticate } from "../../../../middleware/auth";
 import { getDevices, getDevice, changeState } from "./devices.controller";
 
 const router = express.Router();
 
-router.get("/", authenticate, getDevices);
-router.get("/:id", authenticate, getDevice);
+router.get("/", getDevices);
+router.get("/:id", getDevice);
 
-router.put("/:id/state/:state", authenticate, changeState);
+router.put("/:id/state/:state", changeState);
 
 export default router;

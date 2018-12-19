@@ -2,15 +2,9 @@
 
 Codice del server centrale di controllo.
 
-## Motivazione
-
-Questo branch e una copia del branch dev ed è stato creato come
-miglioramento ai problemi che ho riscontrato nel utilizzo di
-javascript senza controlli di nessun tipo.
-
 ## Getting Started
 
-Per prima cosa clona questa repo e cambia il branch da master al branch typescript
+Per prima cosa clona questa repo
 
 ```shell
 $ git clone https://github.com/ITISEnricoFermi/silver-computing-raspberry.git

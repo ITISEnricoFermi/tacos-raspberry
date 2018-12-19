@@ -1,7 +1,7 @@
 //@ts-check
 import _ from "lodash";
 import {
-  getDeviceState,
+  findDeviceById,
   changeDeviceState,
   getAllActiveDevices
 } from "./devices.service";
@@ -21,7 +21,7 @@ export async function getDevice(req: any, res: any) {
   try {
     res.json({
       status: 200,
-      result: await getDeviceState(parseInt(req.params.id))
+      result: await findDeviceById(parseInt(req.params.id))
     });
   } catch (e) {
     handleInternalError(res, e);

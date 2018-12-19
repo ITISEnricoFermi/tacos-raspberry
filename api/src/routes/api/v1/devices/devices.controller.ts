@@ -21,7 +21,7 @@ export async function getDevice(req: any, res: any) {
   try {
     res.json({
       status: 200,
-      result: await findDeviceById(parseInt(req.params.id))
+      result: (await findDeviceById(parseInt(req.params.id))).toJSON()
     });
   } catch (e) {
     handleInternalError(res, e);

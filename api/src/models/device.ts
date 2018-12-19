@@ -1,11 +1,12 @@
 import { model, Schema, Model, Document, Query } from "mongoose";
+import _ from "lodash";
 import IDevice from "../../../Iot-controller/interfaces/IDevice";
 import { DeviceState } from "../../../Iot-controller/interfaces/DeviceState";
 import { DeviceType } from "../../../Iot-controller/interfaces/DeviceType";
 
 export interface IDeviceModel extends IDevice, Document {
-  type: DeviceType;
   changeState(newState: DeviceState): Promise<Query<IDeviceModel>>;
+  toJSON(): IDevice;
 }
 
 export const DeviceSchema: Schema = new Schema({
@@ -26,6 +27,12 @@ export const DeviceSchema: Schema = new Schema({
     required: true,
     default: DeviceType.None
   }
+});
+
+DeviceSchema.method("toJSON", function(): IDevice {
+  let device: IDeviceModel = this;
+  let deviceObj = device.toObject();
+  return _.pick(deviceObj, ["devid", "type", "mac", "state"]);
 });
 
 DeviceSchema.method("changeState", async function(

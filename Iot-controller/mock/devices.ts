@@ -1,7 +1,8 @@
 import { DeviceState } from "../interfaces/DeviceState";
 import { DeviceType } from "../interfaces/DeviceType";
+import IDevice from "../interfaces/IDevice";
 
-export function mock_devices() {
+export function mock_devices(): IDevice[] {
   return [
     {
       devid: 0x23,

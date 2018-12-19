@@ -1,27 +1,31 @@
-import {
-  getall,
-  getstate
-} from "../../../../../../Iot-controller/mock/devices";
 import { do_the_thing } from "../../../../../../Iot-controller/services/lights";
 import { DeviceType } from "../../../../../../Iot-controller/interfaces/DeviceType";
-import IDevice from "../../../../../../Iot-controller/interfaces/IDevice";
+import { Device, IDeviceModel } from "../../../../models/device";
 
-const changeDeviceState = async (id: number, state: number) => {
-  let device: IDevice;
-  try {
-    device = await findDeviceById(id);
-  } catch (e) {
-    e.code = 404;
-    throw e;
-  }
+// FIXME: DA SPOSTARE NEL DEVICE MODEL
+const findDeviceById: (devid: number) => Promise<IDeviceModel> = async (
+  devid: number
+) => {
+  const device = await Device.findOne({ devid }).then(
+    (device: IDeviceModel) => device
+  );
 
-  const r = await do_the_thing(device.devid, state);
-  if (!r) throw Error("Non sono riuscirto a cambiare lo stato del device");
+  if (device) return device;
+
+  let e = Error("Device not found!");
+  //@ts-ignore
+  e.code = 404;
+  throw e;
 };
 
-const getAllActiveDevices = getall;
+const changeDeviceState = async (id: number, state: number): Promise<void> => {
+  let device: IDeviceModel = await findDeviceById(id);
 
-const findDeviceById = getstate;
+  let r = do_the_thing(device.devid, state);
+  if (!r) throw Error("Non riesco a cambiare lo stato del dispositivo");
+};
+
+const getAllActiveDevices = async () => await Device.find({});
 
 const getDeviceState = async (devid: number) => {
   let dev = await findDeviceById(devid);

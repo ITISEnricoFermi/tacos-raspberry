@@ -1,7 +1,6 @@
 import express from "express";
 import logger from "morgan";
 import cookieParser from "cookie-parser";
-import bodyParser from "body-parser";
 import socketIO from "socket.io";
 import http from "http";
 import cors from "cors";
@@ -11,9 +10,6 @@ import { normalizePort } from "./src/utils/utils";
 import { EventBus } from "./src/config/bus";
 
 import api from "./src/routes/api.route";
-import login from "./src/routes/login/login.route";
-import logout from "./src/routes/logout/logout.route";
-
 const node_env = config.node_env;
 const port = normalizePort(config.server_port);
 
@@ -36,13 +32,11 @@ app.use(
   })
 );
 app.options("*", cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use("/api", api);
-app.use("/login", login);
-app.use("/logout", logout);
 
 app.use((req, res, next) => {
   let err = new Error("Not Found");

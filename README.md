@@ -9,7 +9,6 @@ Per prima cosa clona questa repo
 ```shell
 $ git clone https://github.com/ITISEnricoFermi/silver-computing-raspberry.git
 $ cd silver-computing-raspberry
-$ git checkout typescript
 ```
 
 Installa tutte le dipendenze e avvia il server

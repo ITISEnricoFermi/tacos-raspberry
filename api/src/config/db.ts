@@ -1,32 +1,7 @@
 //@ts-check
 import mongoose from "mongoose";
 import { config } from "./conf";
-import MongoMemoryServer from "mongodb-memory-server";
 mongoose.Promise = Promise;
-
-if (config.in_memory_db) {
-  const mongoServer = new MongoMemoryServer();
-
-  mongoServer.getConnectionString().then(mongoUri => {
-    const mongooseOpts = {
-      autoReconnect: true,
-      reconnectTries: Number.MAX_VALUE,
-      reconnectInterval: 1000,
-      useNewUrlParser: true
-    };
-
-    connectMongoose(mongoUri, mongooseOpts);
-
-    mongoose.connection.on("error", e => {
-      if (e.message.code === "ETIMEDOUT") {
-        console.log(e);
-        connectMongoose(mongoUri, mongooseOpts);
-      }
-    });
-  });
-} else {
-  connectMongoose(config.mongo_uri, { useNewUrlParser: true });
-}
 
 function connectMongoose(
   databaseUri: string,
@@ -49,6 +24,7 @@ function connectMongoose(
       process.exit(0);
     });
 }
+connectMongoose(config.mongo_uri, { useNewUrlParser: true });
 
 export { mongoose };
 export default mongoose;

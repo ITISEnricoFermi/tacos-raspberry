@@ -1,0 +1,36 @@
+import { do_the_thing } from "../../../../../Iot-controller/services/lights";
+import { DeviceType } from "../../../../../Iot-controller/interfaces/DeviceType";
+import { Device } from "../../../../models/device";
+import { DeviceState } from "../../../../../Iot-controller/interfaces/DeviceState";
+
+// FIXME: DA SPOSTARE NEL DEVICE MODEL
+const findDeviceById: (
+  devid: number
+) => Promise<{ devid: number; state: number }> = async (devid: number) => {
+  return {
+    devid,
+    state: DeviceState.Ok
+  };
+};
+
+const changeDeviceState = async (id: number, state: number): Promise<void> => {
+  let device = await findDeviceById(id);
+
+  let r = do_the_thing(device.devid, state);
+  if (!r) throw Error("Non riesco a cambiare lo stato del dispositivo");
+};
+
+const getAllActiveDevices = async () => await Device.find({});
+
+const getDeviceState = async (devid: number) => {
+  let dev = await findDeviceById(devid);
+  return dev.state;
+};
+
+export {
+  changeDeviceState,
+  DeviceType,
+  getAllActiveDevices,
+  getDeviceState,
+  findDeviceById
+};

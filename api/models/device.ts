@@ -1,8 +1,8 @@
 import { model, Schema, Model, Document, Query } from "mongoose";
 import _ from "lodash";
-import IDevice from "../../../Iot-controller/interfaces/IDevice";
-import { DeviceState } from "../../../Iot-controller/interfaces/DeviceState";
-import { DeviceType } from "../../../Iot-controller/interfaces/DeviceType";
+import IDevice from "../../Iot-controller/interfaces/IDevice";
+import { DeviceState } from "../../Iot-controller/interfaces/DeviceState";
+import { DeviceType } from "../../Iot-controller/interfaces/DeviceType";
 
 export interface IDeviceModel extends IDevice, Document {
   changeState(newState: DeviceState): Promise<Query<IDeviceModel>>;

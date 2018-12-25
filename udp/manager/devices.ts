@@ -1,16 +1,10 @@
 var devices;
 
-function add(m){
-    let device = {
-
-    };
-    devices.add(device);
+function add(m) {
+  let device = {};
+  devices.add(device);
 }
 
-function remove(m){
+function remove(m) {}
 
-}
-
-function update(m){
-
-}
+function update(m) {}

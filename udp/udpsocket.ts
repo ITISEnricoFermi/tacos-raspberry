@@ -47,7 +47,6 @@ function sendData(payload, type, mac) {
     if(type.length>8||mac.length>6*8||len.length>8||payload.length>255*8)
         return Error("Invalid length for arguments")
 
-    console.log([type, mac, len, payload])
     var message = Buffer.concat([type, mac, len, payload]);
     udpsocket.send(message, 50743, "255.255.255.255", (err) => {
         if (err) return console.log(err);
@@ -56,7 +55,9 @@ function sendData(payload, type, mac) {
 
 udpsocket.bind(UDP_PORT);
 
-sendData("Roba","NEW","SO:NO:IO:LO:GI:UR:OO")
+setTimeout(()=>{
+    sendData("Roba","NEW","SO:NO:IO:LO:GI:UR:OO")
+},1000);
 
 export {
     udpsocket,

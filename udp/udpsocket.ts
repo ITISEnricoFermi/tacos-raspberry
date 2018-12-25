@@ -49,14 +49,14 @@ function sendData(payload, type, mac) {
 
     console.log([type, mac, len, payload])
     var message = Buffer.concat([type, mac, len, payload]);
-    udpsocket.send(message, 50743, "255.255.255.255", (err) => {
+    udpsocket.send(message, UDP_PORT, "255.255.255.255", (err) => {
         if (err) return console.log(err);
     });
 }
 
 udpsocket.bind(UDP_PORT);
 
-sendData("Roba","NEW","SO:NO:IO:LO:GI:UR:OO")
+//sendData("Roba","NEW","SO:NO:IO:LO:GI:UR:OO")
 
 export {
     udpsocket,

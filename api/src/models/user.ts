@@ -3,19 +3,23 @@ import { config } from "../config/conf";
 import jwt from "jsonwebtoken";
 import _ from "lodash";
 import bcrypt from "bcryptjs";
+import { config } from "../../src/config/conf";
+
+const jwt_secret = config.jwt_secret;
 
 const TOKEN_SALT: string = config.jwt_salt;
 
 export interface IUser {
   username: string;
   password: string;
+  auth: number;
 }
 
 export interface IUserModel extends IUser, Document {
-  tokens: Array<{ access: string; token: string }>;
   toJson(): { _id: string; username: string };
   generateAuthToken(): Promise<string>;
-  removeToken(token: string): Query<any>;
+  //findById(): Promise<IUserModel>;
+  //findByCredentials(): Promise<IUserModel>;
 }
 
 export const UserSchema: Schema = new Schema({
@@ -31,18 +35,10 @@ export const UserSchema: Schema = new Schema({
     required: true,
     minlength: 5
   },
-  tokens: [
-    {
-      access: {
-        type: String,
-        required: true
-      },
-      token: {
-        type: String,
-        required: true
-      }
-    }
-  ]
+  auth: {
+    type: Number,
+    required: false,
+  }
 });
 
 UserSchema.method("toJSON", function(): { _id: string; username: string } {
@@ -54,28 +50,27 @@ UserSchema.method("toJSON", function(): { _id: string; username: string } {
 
 UserSchema.method("generateAuthToken", function(): Promise<string> {
   let user: IUserModel = this;
+  let token = jwt.sign({ _id: user._id}, jwt_secret).toString();
+  /*
   let access = "auth";
   let token = jwt
     .sign({ _id: user._id.toHexString(), access }, TOKEN_SALT)
     .toString();
   user.tokens.push({ access, token });
+*/
   return user.save().then(() => token);
 });
 
-UserSchema.method("removeToken", function(token: string) {
-  let user: IUserModel = this;
-
-  return user.update({
-    $pull: {
-      tokens: {
-        token
-      }
-    }
-  });
-});
-
-UserSchema.static("findByToken", function(token: string): Promise<IUserModel> {
+UserSchema.static("findById", function(
+  _id: string,
+): Promise<IUserModel> {
   let User = this;
+
+  return User.findOne({ _id }).then((user: any) => {
+    if (!user) return Promise.reject(new Error("User not found!"));
+    return user;
+    });
+/*
   let decoded;
 
   try {
@@ -90,6 +85,7 @@ UserSchema.static("findByToken", function(token: string): Promise<IUserModel> {
     "tokens.token": token,
     "tokens.access": "auth"
   });
+*/
 });
 
 UserSchema.static("findByCredentials", function(
@@ -99,7 +95,7 @@ UserSchema.static("findByCredentials", function(
   let User = this;
 
   return User.findOne({ username }).then((user: any) => {
-    if (!user) return Promise.reject(new Error("User not Found!"));
+    if (!user) return Promise.reject(new Error("User not found!"));
     return bcrypt.compare(password, user.password).then((ok: boolean) => {
       if (!ok) return Promise.reject(new Error("Incorret password!"));
       return user;

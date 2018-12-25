@@ -1,17 +1,10 @@
-import { User, IUserModel } from "../../models/user";
+import { Token, ITokenModel } from "../../models/blacklist";
 
 export async function logout(token: string) {
-  let user: IUserModel;
+  let blacklisted: ITokenModel;
 
   try {
-    // @ts-ignore
-    user = await User.findByToken(token);
-  } catch (e) {
-    throw Error("Unable to find user");
-  }
-
-  try {
-    await user.removeToken(token);
+    blacklisted = await Token.create(token);
   } catch (e) {
     throw Error("Cannot logout!");
   }

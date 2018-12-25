@@ -1,10 +1,13 @@
 import { model, Schema, Model, Document, Query } from "mongoose";
+import { config } from "../config/conf";
 import jwt from "jsonwebtoken";
 import _ from "lodash";
 import bcrypt from "bcryptjs";
 import { config } from "../../src/config/conf";
 
 const jwt_secret = config.jwt_secret;
+
+const TOKEN_SALT: string = config.jwt_salt;
 
 export interface IUser {
   username: string;
@@ -48,6 +51,13 @@ UserSchema.method("toJSON", function(): { _id: string; username: string } {
 UserSchema.method("generateAuthToken", function(): Promise<string> {
   let user: IUserModel = this;
   let token = jwt.sign({ _id: user._id}, jwt_secret).toString();
+  /*
+  let access = "auth";
+  let token = jwt
+    .sign({ _id: user._id.toHexString(), access }, TOKEN_SALT)
+    .toString();
+  user.tokens.push({ access, token });
+*/
   return user.save().then(() => token);
 });
 
@@ -55,10 +65,27 @@ UserSchema.static("findById", function(
   _id: string,
 ): Promise<IUserModel> {
   let User = this;
+
   return User.findOne({ _id }).then((user: any) => {
     if (!user) return Promise.reject(new Error("User not found!"));
     return user;
     });
+/*
+  let decoded;
+
+  try {
+    decoded = jwt.verify(token, TOKEN_SALT);
+  } catch (e) {
+    return Promise.reject(e);
+  }
+
+  return User.findOne({
+    // @ts-ignore
+    _id: decoded._id,
+    "tokens.token": token,
+    "tokens.access": "auth"
+  });
+*/
 });
 
 UserSchema.static("findByCredentials", function(

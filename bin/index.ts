@@ -18,5 +18,3 @@ export { udpsocket };
 setInterval(() => {
   EventBus.emit("device-state-change", { id: Math.random() });
 }, 1000);
-
-// Dgram socket listener

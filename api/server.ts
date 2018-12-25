@@ -5,11 +5,11 @@ import socketIO from "socket.io";
 import http from "http";
 import cors from "cors";
 
-import { config } from "./src/config/conf";
-import { normalizePort } from "./src/utils/utils";
-import { EventBus } from "./src/config/bus";
+import { config } from "../config/conf";
+import { normalizePort } from "./utils/utils";
+import { EventBus } from "../config/bus";
 
-import api from "./src/routes/api.route";
+import api from "./routes/api.route";
 const node_env = config.node_env;
 const port = normalizePort(config.server_port);
 

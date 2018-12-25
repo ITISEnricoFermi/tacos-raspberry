@@ -4,7 +4,7 @@
 
 // Setup event bus e mongoose
 
-import { EventBus } from "../api/src/config/bus";
+import { EventBus } from "../config/bus";
 //import { mongoose } from "../api/src/config/db";
 //export { EventBus, mongoose };
 

@@ -40,7 +40,7 @@ function sendData(type: string, mac: string, payload: string) {
   let typeB: Buffer = Buffer.from(type);
   let macB: Buffer = Buffer.from(mac.replace(/:/g, ""), "hex");
   let payloadB: Buffer = Buffer.from(payload);
-  let lenB: Buffer = new Buffer(1);
+  let lenB: Buffer = Buffer.alloc(1);
   lenB.writeInt8(payloadB.length, 0);
 
   if (

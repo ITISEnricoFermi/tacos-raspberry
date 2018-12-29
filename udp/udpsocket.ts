@@ -1,7 +1,7 @@
 import { createSocket, Socket } from "dgram";
 import { config } from "../config/conf";
 import { PushEvent } from "../config/bus";
-import { DeviceCounter } from "./manager/devicecounter";
+import { IDevice, createIDevice } from "../Iot-controller/interfaces/IDevice";
 import os, { NetworkInterfaceInfo } from "os";
 const DEBUG = config.node_env === "development";
 
@@ -29,21 +29,16 @@ export namespace socketspace {
   udpsocket.on("message", m => {
     try {
       let data = JSON.parse(m.toString());
+      let device: IDevice = createIDevice(data);
       switch (data.operation) {
         case "NEW":
-          PushEvent("new-device" /* , FIXME: Inserisci qui il device */);
+          PushEvent("new-device", device);
           break;
         case "UPDATE":
-          /*
-            FIXME:
-            const device = crea un IDevice con i dati ricevuti e inseriscilo
-
-            DeviceCounter.hasChanged(device)
-                                    ^^ QUI
-           */
+          PushEvent("update-device", device);
           break;
         case "ALIVE":
-          PushEvent("device-alive" /* , FIXME: Inserisci qui il device */);
+          PushEvent("device-alive", device);
           break;
       }
     } catch (e) {

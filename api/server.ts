@@ -84,8 +84,8 @@ server.on("listening", () => {
 });
 
 // Socket io stuff
-SubscriveToEvent("device-state-change", (dev: IDevice) => {
-  io.sockets.emit("device-state-change", dev);
+SubscriveToEvent("device-state-changed", (dev: IDevice) => {
+  io.sockets.emit("device-state-changed", dev);
 });
 
 io.on("connection", socket => {

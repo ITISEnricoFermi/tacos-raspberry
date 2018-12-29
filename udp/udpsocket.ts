@@ -63,7 +63,7 @@ export namespace socketspace {
         console.log(
           `Sending to ${mac} [${DestPORT}] {${
             jsonMessage.type
-          }} => ${JSON.stringify(jsonMessage.data.toString(), null, 2)}`
+          }} => ${jsonMessage.data.toString()}`
         );
       }
     });

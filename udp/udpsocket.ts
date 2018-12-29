@@ -2,6 +2,7 @@ import { createSocket, Socket } from "dgram";
 import { config } from "../config/conf";
 import { PushEvent } from "../config/bus";
 import { DeviceCounter } from "./manager/devicecounter";
+export { DeviceCounter };
 import os, { NetworkInterfaceInfo } from "os";
 const DEBUG = config.node_env === "development";
 

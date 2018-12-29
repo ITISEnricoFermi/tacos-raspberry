@@ -2,7 +2,7 @@ import { DeviceState } from "./DeviceState";
 import { DeviceType } from "./DeviceType";
 
 /**
- * Dispositivi di base
+ * Caratteristiche che dovrà avere un dispositivo per venir considerato tale
  */
 export interface IDevice {
   devid: number;

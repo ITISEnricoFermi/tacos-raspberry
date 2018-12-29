@@ -6,6 +6,11 @@ import {
   getAllActiveDevices
 } from "./devices.service";
 
+/**
+ * Invia al client un oggetto json con un array di tutti i devices
+ * @param req Express request object
+ * @param res Express response object
+ */
 export async function getDevices(req: any, res: any) {
   try {
     res.json({
@@ -18,6 +23,11 @@ export async function getDevices(req: any, res: any) {
   }
 }
 
+/**
+ * Invia al client un singolo device cercandolo dal id specificato nei params della richiesta
+ * @param req Express request object
+ * @param res Express response object
+ */
 export async function getDevice(req: any, res: any) {
   try {
     res.json({
@@ -30,6 +40,12 @@ export async function getDevice(req: any, res: any) {
   }
 }
 
+/**
+ * Cambia lo stato di un dispositivo che trova tramite l'id passato nei params della richiesta.
+ * Lo stato viene anche esso passato nei params
+ * @param req Express request object
+ * @param res Express response object
+ */
 export async function changeState(req: any, res: any) {
   try {
     await changeDeviceState(
@@ -43,6 +59,11 @@ export async function changeState(req: any, res: any) {
   }
 }
 
+/**
+ * Viene richiamata nel caso accada un errore e invia al client i dettagli del errore
+ * @param res Express response object
+ * @param e Oggetto con le informazioni relative al errore
+ */
 function handleInternalError(res: any, e: any) {
   if (res.app.get("env") === "development") {
     res.status(e.code).json({

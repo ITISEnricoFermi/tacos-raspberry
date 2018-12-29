@@ -3,31 +3,34 @@
  */
 
 // Setup event bus e mongoose
-import { EventBus } from "../api/src/config/bus";
-import { mongoose } from "../api/src/config/db";
-export { EventBus, mongoose };
+import { PushEvent } from "../config/bus";
+
+// Setup udp socket
+import { sendData } from "../udp/udpsocket";
+import { IDevice, createIDevice } from "../Iot-controller/interfaces/IDevice";
 
 // Setup API
 import { server } from "../api/server";
 export { server };
 
-setInterval(() => {
-  EventBus.emit("device-state-change", { id: Math.random() });
-}, 1000);
-
-// Dgram socket listener
-import { createSocket, Socket } from "dgram";
-
-const UDP_PORT: number = 0xcafe;
-
-const udpsocket: Socket = createSocket("udp4");
-
-udpsocket.on("close", () => console.log("Socket closed."));
-udpsocket.on("error", e => console.log(e.message));
-udpsocket.on("listening", () => {
-  udpsocket.setBroadcast(true);
-  console.log(`Socket listening for broadcast messages on port ${UDP_PORT}`);
+// testing some things
+const device: IDevice = createIDevice({
+  devid: 57,
+  mac: "AA:BB:CC:00:22:33",
+  state: "ON",
+  type: "A"
 });
-udpsocket.on("message", m => console.log(`Recieved message: ${m}`));
 
-udpsocket.bind(UDP_PORT);
+PushEvent("new-device", device);
+
+setInterval(() => {
+  PushEvent("update-device", device);
+}, 10000);
+
+setInterval(() => {
+  PushEvent("device-alive", device);
+}, 5000);
+
+setInterval(() => {
+  sendData("N", "AA:BB:CC:11:22:33", "Roba");
+}, 5000);

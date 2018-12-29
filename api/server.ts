@@ -5,28 +5,34 @@ import socketIO from "socket.io";
 import http from "http";
 import cors from "cors";
 
-import { config } from "./src/config/conf";
-import { normalizePort } from "./src/utils/utils";
-import { EventBus } from "./src/config/bus";
+// Import delle configurazioni e file utili
+import { config } from "../config/conf";
+import { normalizePort } from "./utils/utils";
+import { SubscriveToEvent } from "../config/bus";
+import IDevice from "../Iot-controller/interfaces/IDevice";
 
-import api from "./src/routes/api.route";
+// Configurazioni iniziali di porta, node_env e /api route
+import api from "./routes/api.route";
 const node_env = config.node_env;
 const port = normalizePort(config.server_port);
 
+// Inizializzazione del app express, server http e server socketio
 export const app = express();
 export const server = http.createServer(app);
 export const io = socketIO(server, { serveClient: node_env === "development" });
 
+// Setup del sistema di logging del api rest
 app.set("env", node_env);
 if (node_env === "development") {
   app.use(logger("dev"));
 }
 
+// Setup cross origin per il futuro e parsing delle richieste
 app.use(
   cors({
     origin: "*",
     credentials: true,
-    method: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    //method: "GET,HEAD,PUT,PATCH,POST,DELETE",
     preflightContinue: false,
     optionsSuccessStatus: 204
   })
@@ -36,6 +42,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+// Bind della route /api
 app.use("/api", api);
 
 app.use((req, res, next) => {
@@ -45,7 +52,7 @@ app.use((req, res, next) => {
   next(err);
 });
 
-// error handler
+// Error handler
 app.use((err: any, req: any, res: any, next: Function) => {
   if (req.app.get("env") === "development") {
     console.error(err);
@@ -83,8 +90,8 @@ server.on("listening", () => {
 });
 
 // Socket io stuff
-EventBus.on("device-state-change", dev => {
-  io.sockets.emit("device-state-change", dev);
+SubscriveToEvent("device-state-changed", (dev: IDevice) => {
+  io.sockets.emit("device-state-changed", dev);
 });
 
 io.on("connection", socket => {

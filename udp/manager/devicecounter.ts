@@ -42,12 +42,16 @@ export namespace DeviceCounter {
 
   SubscriveToEvent("device-state-change", async (device: IDevice) => {
     const dev = await findById(device.devid);
-    if (!dev && DEBUG)
-      return console.error(
-        `Unknown device in device-state-change! [{id: ${device.devid}, mac:${
-          device.mac
-        }, ...}]`
-      );
+    if (!dev) {
+      if (DEBUG) {
+        console.error(
+          `Unknown device in device-state-change! [{id: ${device.devid}, mac:${
+            device.mac
+          }, ...}]`
+        );
+      }
+      return;
+    }
     await update(device);
   });
 

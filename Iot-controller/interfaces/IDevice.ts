@@ -1,11 +1,7 @@
 import { DeviceState } from "./DeviceState";
 import { DeviceType } from "./DeviceType";
 
-/**
- * Caratteristiche che dovrà avere un dispositivo per venir considerato tale
- */
-
-export function createIDevice(device) {
+export function createIDevice(device): IDevice {
   let newDevice: IDevice = {
     devid: device.devid,
     mac: device.mac,
@@ -15,6 +11,9 @@ export function createIDevice(device) {
   return newDevice;
 }
 
+/**
+ * Caratteristiche che dovrà avere un dispositivo per venir considerato tale
+ */
 export interface IDevice {
   devid: number;
   mac: string;

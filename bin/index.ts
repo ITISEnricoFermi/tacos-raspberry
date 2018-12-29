@@ -14,7 +14,7 @@ export { server };
 
 // testing some things
 setInterval(() => {
-  PushEvent("device-state-change", { id: Math.random() });
+  PushEvent("device-state-change", { devid: Math.random() });
 }, 1000);
 
 setInterval(() => {

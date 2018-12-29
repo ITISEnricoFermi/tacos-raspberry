@@ -1,16 +1,10 @@
 import { do_the_thing } from "../../../../../Iot-controller/services/lights";
 import { DeviceType } from "../../../../../Iot-controller/interfaces/DeviceType";
-import { Device } from "../../../../models/device";
-import { DeviceState } from "../../../../../Iot-controller/interfaces/DeviceState";
+import { DeviceCounter } from "../../../../../udp/manager/devicecounter";
 
 // FIXME: DA SPOSTARE NEL DEVICE MODEL
-const findDeviceById: (
-  devid: number
-) => Promise<{ devid: number; state: number }> = async (devid: number) => {
-  return {
-    devid,
-    state: DeviceState.Ok
-  };
+const findDeviceById: (devid: number) => any = async (devid: number) => {
+  return DeviceCounter.findById(devid);
 };
 
 const changeDeviceState = async (id: number, state: number): Promise<void> => {
@@ -20,7 +14,7 @@ const changeDeviceState = async (id: number, state: number): Promise<void> => {
   if (!r) throw Error("Non riesco a cambiare lo stato del dispositivo");
 };
 
-const getAllActiveDevices = async () => await Device.find({});
+const getAllActiveDevices = async () => await DeviceCounter.getAll();
 
 const getDeviceState = async (devid: number) => {
   let dev = await findDeviceById(devid);

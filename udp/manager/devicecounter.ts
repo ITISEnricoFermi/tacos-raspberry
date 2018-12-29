@@ -1,7 +1,9 @@
 import _ from "lodash";
+import { config } from "../../config/conf";
 import { IDevice } from "../../Iot-controller/interfaces/IDevice";
 import { SubscriveToEvent } from "../../config/bus";
 
+const DEBUG = config.node_env === "development";
 export namespace DeviceCounter {
   const devices: IDevice[] = [];
 
@@ -25,7 +27,7 @@ export namespace DeviceCounter {
 
   SubscriveToEvent("device-state-change", async (device: IDevice) => {
     const dev = await findById(device.devid);
-    if (!dev) throw Error("Unknown device!");
+    if (!dev && DEBUG) return console.error("Unknown device!");
     await update(device);
   });
 }

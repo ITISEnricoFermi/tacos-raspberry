@@ -52,9 +52,9 @@ export namespace DeviceCounter {
    */
   export function findById(devId: number): Promise<IDevice> {
     return new Promise((resolve, reject) => {
-      const index = devices.find(dev => dev.devid === devId);
-      if (!index) return reject(Error("Device not found"));
-      resolve(index);
+      const device = devices.find(dev => dev.devid === devId);
+      if (device) return resolve(device);
+      reject(Error("No device found"));
     });
   }
 
@@ -73,9 +73,34 @@ export namespace DeviceCounter {
    * Iscrizione al evento update-device e modifica del dispositivo corrispondente nella lista dei dispositivi qualora sia diverso al precedente stato.
    * Se avviene una modifica, chiama l'evento device-state-changed.
    */
-  SubscriveToEvent("update-device", async (device: IDevice) => {
-    const dev = await findById(device.devid);
-    if (!dev) {
+  export async function hasChanged(device: IDevice): Promise<boolean> {
+    try {
+      const dev = await findById(device.devid);
+      if (dev === device) {
+        PushEvent("device-state-change", device);
+        return true;
+      }
+    } catch (e) {
+      if (DEBUG) {
+        console.error(`${e.message} [${device.devid}]`);
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Iscrizione al evento device-state-change e modifica del dispositivo corrispondente nella lista dei dispositivi
+   */
+  SubscriveToEvent("device-state-change", async (device: IDevice) => {
+    try {
+      const dev = await findById(device.devid);
+      if (dev === device) {
+        console.log("- Updated Device (also alive): " + device);
+        await update(device);
+        alive(device);
+        PushEvent("device-state-changed", device);
+      }
+    } catch (e) {
       if (DEBUG) {
         console.error(
           `Unknown device in update-device! [{id: ${device.devid}, mac:${
@@ -83,13 +108,6 @@ export namespace DeviceCounter {
           }, ...}]`
         );
       }
-      return;
-    }
-    if (dev === device) {
-      console.log("- Updated Device (also alive): " + device);
-      update(device);
-      alive(device);
-      PushEvent("device-state-changed", device);
     }
   });
 

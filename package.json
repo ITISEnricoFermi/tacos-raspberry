@@ -29,9 +29,9 @@
     "build": "tsc",
     "build-watch": "tsc -w",
     "install": "npm run build",
-    "start": "node dist/bin/index.js",
-    "dev": "cross-env DEBUG=true node dist/bin/index.js",
-    "dev-watch": "cross-env DEBUG=true node_modules/.bin/nodemon dist/bin/index.js"
+    "start": "cross-env NODE_ENV=XD node dist/bin/index.js",
+    "dev": "node dist/bin/index.js",
+    "dev-watch": "node_modules/.bin/nodemon dist/bin/index.js"
   },
   "repository": {
     "type": "git",

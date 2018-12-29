@@ -1,6 +1,7 @@
 import { createSocket, Socket } from "dgram";
 import { config } from "../config/conf";
 import os, { NetworkInterfaceInfo } from "os";
+const DEBUG = config.node_env === "development";
 
 export namespace socketspace {
   const RecPORT: number = config.udp_rec_port;
@@ -14,6 +15,7 @@ export namespace socketspace {
   });
 
   udpsocket.on("error", e => {
+    if (!DEBUG) return console.log("Errore brutto nel socket udp!");
     console.log(e.message);
   });
 
@@ -34,7 +36,7 @@ export namespace socketspace {
           break;
       }
     } catch (e) {
-      console.log("Error on message: " + e + "\n" + m);
+      if (DEBUG) console.log("Error on message: " + e + "\n" + m);
     }
   });
 
@@ -53,10 +55,17 @@ export namespace socketspace {
     )
       return Error("Invalid length for arguments");
 
-    console.log("Sending...");
     let message: Buffer = Buffer.concat([typeB, macB, lenB, payloadB]);
     udpsocket.send(message, DestPORT, bcAddress, err => {
       if (err) return console.log(err);
+      if (DEBUG) {
+        const jsonMessage = message.toJSON();
+        console.log(
+          `Sending to ${mac} [${DestPORT}] {${
+            jsonMessage.type
+          }} => ${JSON.stringify(jsonMessage.data.toString(), null, 2)}`
+        );
+      }
     });
   }
 
@@ -95,7 +104,7 @@ export namespace socketspace {
           broadcast.push(byteBroadcast.toString());
         }
         bcAddress = broadcast.join(".");
-        console.log("Broadcast address: " + bcAddress);
+        if (DEBUG) console.log("Broadcast address: " + bcAddress);
       });
     });
   }

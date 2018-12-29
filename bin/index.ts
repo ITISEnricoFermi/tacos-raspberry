@@ -3,7 +3,7 @@
  */
 
 // Setup event bus e mongoose
-import { EventBus } from "../config/bus";
+import { PushEvent } from "../config/bus";
 
 // Setup udp socket
 import { sendData } from "../udp/udpsocket";
@@ -14,7 +14,7 @@ export { server };
 
 // testing some things
 setInterval(() => {
-  EventBus.emit("device-state-change", { id: Math.random() });
+  PushEvent("device-state-change", { id: Math.random() });
 }, 1000);
 
 setInterval(() => {

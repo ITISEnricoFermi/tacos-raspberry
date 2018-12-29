@@ -1,5 +1,7 @@
 import { createSocket, Socket } from "dgram";
 import { config } from "../config/conf";
+import { PushEvent } from "../config/bus";
+import { DeviceCounter } from "./manager/devicecounter";
 import os, { NetworkInterfaceInfo } from "os";
 const DEBUG = config.node_env === "development";
 
@@ -29,10 +31,19 @@ export namespace socketspace {
       let data = JSON.parse(m.toString());
       switch (data.operation) {
         case "NEW":
+          PushEvent("new-device" /* , FIXME: Inserisci qui il device */);
           break;
         case "UPDATE":
+          /*
+            FIXME:
+            const device = crea un IDevice con i dati ricevuti e inseriscilo
+
+            DeviceCounter.hasChanged(device)
+                                    ^^ QUI
+           */
           break;
         case "ALIVE":
+          PushEvent("device-alive" /* , FIXME: Inserisci qui il device */);
           break;
       }
     } catch (e) {

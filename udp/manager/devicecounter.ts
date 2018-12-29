@@ -50,6 +50,12 @@ export namespace DeviceCounter {
       );
     await update(device);
   });
+
+  SubscriveToEvent("new-device", (device: IDevice) => {
+    devices.push(device);
+  });
+
+  SubscriveToEvent("device-alive", (device: IDevice) => {});
 }
 
 export default DeviceCounter;

@@ -1,6 +1,7 @@
-//@ts-check
-
-enum DeviceState {
+/**
+ * Enum che rappresenta i possibili stati dei dispositivi
+ */
+export enum DeviceState {
   None = 0,
   Ok,
   On,
@@ -9,4 +10,4 @@ enum DeviceState {
   Busy
 }
 
-export { DeviceState };
+export default DeviceState;

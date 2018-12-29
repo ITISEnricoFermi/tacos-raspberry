@@ -28,7 +28,9 @@ export namespace DeviceCounter {
   export async function hasChanged(device: IDevice): Promise<boolean> {
     const dev = await findById(device.devid);
     if (!dev) {
-      if (DEBUG) console.error("Unknown device!");
+      if (DEBUG) {
+        console.error(`Unknown device! [${device.devid}]`);
+      }
       return false;
     }
     if (dev === device) {
@@ -40,7 +42,12 @@ export namespace DeviceCounter {
 
   SubscriveToEvent("device-state-change", async (device: IDevice) => {
     const dev = await findById(device.devid);
-    if (!dev && DEBUG) return console.error("Unknown device!");
+    if (!dev && DEBUG)
+      return console.error(
+        `Unknown device in device-state-change! [{id: ${device.devid}, mac:${
+          device.mac
+        }, ...}]`
+      );
     await update(device);
   });
 }

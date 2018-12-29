@@ -8,6 +8,7 @@ import cors from "cors";
 import { config } from "../config/conf";
 import { normalizePort } from "./utils/utils";
 import { SubscriveToEvent } from "../config/bus";
+import IDevice from "../Iot-controller/interfaces/IDevice";
 
 import api from "./routes/api.route";
 const node_env = config.node_env;
@@ -83,7 +84,7 @@ server.on("listening", () => {
 });
 
 // Socket io stuff
-SubscriveToEvent("device-state-change", dev => {
+SubscriveToEvent("device-state-change", (dev: IDevice) => {
   io.sockets.emit("device-state-change", dev);
 });
 

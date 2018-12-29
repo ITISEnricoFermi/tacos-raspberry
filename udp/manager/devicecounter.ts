@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { config } from "../../config/conf";
 import { IDevice } from "../../Iot-controller/interfaces/IDevice";
-import { SubscriveToEvent } from "../../config/bus";
+import { SubscriveToEvent, PushEvent } from "../../config/bus";
 
 const DEBUG = config.node_env === "development";
 export namespace DeviceCounter {
@@ -23,6 +23,19 @@ export namespace DeviceCounter {
     const index = devices.findIndex(dev => dev.devid === device.devid);
     if (index === -1) return;
     devices[index] = device;
+  }
+
+  export async function hasChanged(device: IDevice): Promise<boolean> {
+    const dev = await findById(device.devid);
+    if (!dev) {
+      if (DEBUG) console.error("Unknown device!");
+      return false;
+    }
+    if (dev === device) {
+      PushEvent("device-state-change", device);
+      return true;
+    }
+    return false;
   }
 
   SubscriveToEvent("device-state-change", async (device: IDevice) => {

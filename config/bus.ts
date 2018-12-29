@@ -1,5 +1,10 @@
 import { EventEmitter } from "events";
 
-export const EventBus = new EventEmitter();
+namespace Bus {
+  export const EventBus = new EventEmitter();
+}
 
-export default EventBus;
+import EventBus = Bus.EventBus;
+
+export { EventBus };
+export default Bus;

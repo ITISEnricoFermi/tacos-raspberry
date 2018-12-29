@@ -3,18 +3,20 @@
  */
 
 // Setup event bus e mongoose
-
 import { EventBus } from "../config/bus";
-//import { mongoose } from "../api/src/config/db";
-//export { EventBus, mongoose };
+
+// Setup udp socket
+import { sendData } from "../udp/udpsocket";
 
 // Setup API
 import { server } from "../api/server";
 export { server };
 
-import { udpsocket } from "../udp/udpsocket";
-export { udpsocket };
-
+// testing some things
 setInterval(() => {
   EventBus.emit("device-state-change", { id: Math.random() });
 }, 1000);
+
+setInterval(() => {
+  sendData("N", "AA:BB:CC:11:22:33", "Roba");
+}, 2000);

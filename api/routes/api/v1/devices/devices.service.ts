@@ -2,7 +2,6 @@ import { do_the_thing } from "../../../../../Iot-controller/services/lights";
 import { DeviceType } from "../../../../../Iot-controller/interfaces/DeviceType";
 import { DeviceCounter } from "../../../../../udp/manager/devicecounter";
 
-// FIXME: DA SPOSTARE NEL DEVICE MODEL
 const findDeviceById: (devid: number) => any = async (devid: number) => {
   return DeviceCounter.findById(devid);
 };

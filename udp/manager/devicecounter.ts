@@ -1,6 +1,9 @@
 import _ from "lodash";
 import { config } from "../../config/conf";
-import { IDevice } from "../../Iot-controller/interfaces/IDevice";
+import {
+  IDevice,
+  createIDevice
+} from "../../Iot-controller/interfaces/IDevice";
 import { SubscriveToEvent, PushEvent } from "../../config/bus";
 import DeviceState from "../../Iot-controller/interfaces/DeviceState";
 
@@ -122,7 +125,8 @@ export namespace DeviceCounter {
    * Iscrizione al evento device-new e aggiunta del dispositivo alla lista se non presente
    */
   SubscriveToEvent("device-new", (device: IDevice) => {
-    create(device);
+    // Clona il device altrimenti non funziona l'aggiornamento durante i test (per "più" informazioni vedere il messaggio di commit)
+    create(createIDevice(device));
     console.log("- New Device: " + JSON.stringify(device.devid));
   });
 

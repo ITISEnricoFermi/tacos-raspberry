@@ -94,7 +94,7 @@ export namespace DeviceCounter {
   /**
    * Iscrizione al evento device-state-change e modifica del dispositivo corrispondente nella lista dei dispositivi
    */
-  SubscriveToEvent("update-device", async (device: IDevice) => {
+  SubscriveToEvent("device-update", async (device: IDevice) => {
     try {
       const dev = await findById(device.devid);
       alive(device);
@@ -109,7 +109,7 @@ export namespace DeviceCounter {
     } catch (e) {
       if (DEBUG) {
         console.error(
-          `Unknown device in update-device! [{id: ${device.devid}, mac:${
+          `Unknown device in device-update! [{id: ${device.devid}, mac:${
             device.mac
           }, ...}]`
         );
@@ -118,9 +118,9 @@ export namespace DeviceCounter {
   });
 
   /**
-   * Iscrizione al evento new-device e aggiunta del dispositivo alla lista se non presente
+   * Iscrizione al evento device-new e aggiunta del dispositivo alla lista se non presente
    */
-  SubscriveToEvent("new-device", (device: IDevice) => {
+  SubscriveToEvent("device-new", (device: IDevice) => {
     console.log("- New Device: " + JSON.stringify(device.devid));
     create(device);
   });
@@ -135,7 +135,7 @@ export namespace DeviceCounter {
       if (DEBUG) {
         console.error(err);
       }
-      PushEvent("new-device", device);
+      PushEvent("device-new", device);
     }
   });
 }

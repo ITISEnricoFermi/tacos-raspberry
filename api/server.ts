@@ -94,6 +94,10 @@ SubscriveToEvent("device-state-changed", (dev: IDevice) => {
   io.sockets.emit("device-state-changed", dev);
 });
 
+SubscriveToEvent("device-new", (dev: IDevice) => {
+  io.sockets.emit("device-new", dev);
+});
+
 io.on("connection", socket => {
   socket.emit("READY");
   socket.on("disconnecting", reason => {

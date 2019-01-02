@@ -32,10 +32,10 @@ export namespace socketspace {
       let device: IDevice = createIDevice(data);
       switch (data.operation) {
         case "NEW":
-          PushEvent("new-device", device);
+          PushEvent("device-new", device);
           break;
         case "UPDATE":
-          PushEvent("update-device", device);
+          PushEvent("device-update", device);
           break;
         case "ALIVE":
           PushEvent("device-alive", device);

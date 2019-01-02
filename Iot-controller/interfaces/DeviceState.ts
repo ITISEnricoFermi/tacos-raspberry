@@ -7,7 +7,8 @@ export enum DeviceState {
   On,
   Off,
   Unknown,
-  Busy
+  Busy,
+  Disconnected
 }
 
 export default DeviceState;

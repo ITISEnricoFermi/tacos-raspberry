@@ -2,6 +2,7 @@ import _ from "lodash";
 import { config } from "../../config/conf";
 import { IDevice } from "../../Iot-controller/interfaces/IDevice";
 import { SubscriveToEvent, PushEvent } from "../../config/bus";
+import DeviceState from "../../Iot-controller/interfaces/DeviceState";
 
 const DEBUG = config.node_env === "development";
 /**
@@ -47,6 +48,8 @@ export namespace DeviceCounter {
    * @returns {void}
    */
   export function remove(device: IDevice): void {
+    device.state = DeviceState.Disconnected;
+    PushEvent("device-state-changed", device);
     const index = devices.findIndex(dev => dev.devid === device.devid);
     if (index === -1) throw Error("Device not found");
     devices.splice(index, 1);
@@ -85,6 +88,7 @@ export namespace DeviceCounter {
     const index = devices.findIndex(dev => dev.devid === device.devid);
     if (index === -1) return Error("Device not found");
     devices[index] = device;
+    PushEvent("device-state-changed", device);
   }
 
   /**
@@ -101,7 +105,6 @@ export namespace DeviceCounter {
           );
         }
         await update(device);
-        PushEvent("device-state-changed", device);
       }
     } catch (e) {
       if (DEBUG) {
@@ -118,13 +121,22 @@ export namespace DeviceCounter {
    * Iscrizione al evento new-device e aggiunta del dispositivo alla lista se non presente
    */
   SubscriveToEvent("new-device", (device: IDevice) => {
-    console.log("- New Device: " + JSON.stringify(device));
+    console.log("- New Device: " + JSON.stringify(device.devid));
     create(device);
   });
 
   SubscriveToEvent("device-alive", (device: IDevice) => {
-    console.log("- Device Alive: " + JSON.stringify(device));
-    alive(device);
+    try {
+      process.stdout.write(
+        "- Device Alive: " + JSON.stringify(device.devid) + "\r"
+      );
+      alive(device);
+    } catch (err) {
+      if (DEBUG) {
+        console.error(err);
+      }
+      PushEvent("new-device", device);
+    }
   });
 }
 

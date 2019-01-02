@@ -5,6 +5,7 @@ import { SubscriveToEvent, PushEvent } from "../../config/bus";
 import DeviceState from "../../Iot-controller/interfaces/DeviceState";
 
 const DEBUG = config.node_env === "development";
+const TIMEOUT = config.devices_timeout;
 /**
  * DeviceCounter namespace contiene le funzioni e la lista di tutti i dispositivi attualmente attivi
  */
@@ -27,7 +28,7 @@ export namespace DeviceCounter {
     const index = devices.findIndex(dev => dev.devid === device.devid);
     if (index > -1) throw Error("Device already exists");
     devices.push(device);
-    devicesTimeout.push(setTimeout(remove, 10000, device));
+    devicesTimeout.push(setTimeout(remove, TIMEOUT, device));
   }
 
   /**
@@ -39,7 +40,7 @@ export namespace DeviceCounter {
     const index = devices.findIndex(dev => dev.devid === device.devid);
     if (index === -1) throw Error("Device not found");
     clearTimeout(devicesTimeout[index]);
-    devicesTimeout[index] = setTimeout(remove, 10000, device);
+    devicesTimeout[index] = setTimeout(remove, TIMEOUT, device);
   }
 
   /**

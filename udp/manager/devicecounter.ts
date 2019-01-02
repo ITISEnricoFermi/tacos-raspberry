@@ -87,7 +87,7 @@ export namespace DeviceCounter {
    */
   export function update(device: IDevice) {
     const index = devices.findIndex(dev => dev.devid === device.devid);
-    if (index === -1) return Error("Device not found");
+    if (index === -1) throw Error("Device not found");
     devices[index] = device;
     PushEvent("device-state-changed", device);
   }
@@ -100,12 +100,12 @@ export namespace DeviceCounter {
       const dev = await findById(device.devid);
       alive(device);
       if (dev !== device) {
+        await update(device);
         if (DEBUG) {
           console.log(
             `- Updated Device (also alive): (${device.devid})[${device.mac}]`
           );
         }
-        await update(device);
       }
     } catch (e) {
       if (DEBUG) {
@@ -122,21 +122,21 @@ export namespace DeviceCounter {
    * Iscrizione al evento device-new e aggiunta del dispositivo alla lista se non presente
    */
   SubscriveToEvent("device-new", (device: IDevice) => {
-    console.log("- New Device: " + JSON.stringify(device.devid));
     create(device);
+    console.log("- New Device: " + JSON.stringify(device.devid));
   });
 
   SubscriveToEvent("device-alive", (device: IDevice) => {
     try {
+      alive(device);
       process.stdout.write(
         "- Device Alive: " + JSON.stringify(device.devid) + "\r"
       );
-      alive(device);
     } catch (err) {
+      PushEvent("device-new", device);
       if (DEBUG) {
         console.error(err);
       }
-      PushEvent("device-new", device);
     }
   });
 }

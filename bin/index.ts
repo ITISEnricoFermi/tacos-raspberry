@@ -34,8 +34,9 @@ let device: IDevice = createIDevice({
 PushEvent("device-new", device);
 
 setInterval(() => {
-  device.state = Math.ceil(Math.random() * 10);
-  PushEvent("device-update", device);
+  let newdevice = createIDevice(device);
+  newdevice.state = Math.ceil(Math.random() * 10);
+  PushEvent("device-update", newdevice);
 }, 10000);
 
 setInterval(() => {

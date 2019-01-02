@@ -32,7 +32,7 @@ export async function getDevice(req: any, res: any) {
   try {
     res.json({
       status: 200,
-      result: JSON.stringify(await findDeviceById(parseInt(req.params.id)))
+      result: await findDeviceById(parseInt(req.params.id))
     });
   } catch (e) {
     e.code = 404;

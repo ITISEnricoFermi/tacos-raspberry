@@ -118,12 +118,12 @@ export namespace DeviceCounter {
    * Iscrizione al evento new-device e aggiunta del dispositivo alla lista se non presente
    */
   SubscriveToEvent("new-device", (device: IDevice) => {
-    console.log("- New Device: " + device);
+    console.log("- New Device: " + JSON.stringify(device));
     create(device);
   });
 
   SubscriveToEvent("device-alive", (device: IDevice) => {
-    console.log("- Device Alive: " + device);
+    console.log("- Device Alive: " + JSON.stringify(device));
     alive(device);
   });
 }

@@ -130,7 +130,11 @@ export namespace DeviceCounter {
     try {
       alive(device);
       process.stdout.write(
-        "- Device Alive: " + JSON.stringify(device.devid) + "\r"
+        " ".repeat(90) +
+          "\r" +
+          "- Device Alive: " +
+          JSON.stringify(device.devid) +
+          "\r"
       );
     } catch (err) {
       PushEvent("device-new", device);

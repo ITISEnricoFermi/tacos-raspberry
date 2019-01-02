@@ -54,11 +54,21 @@ app.use((req, res, next) => {
 });
 
 // Error handler
-app.use((err: any, req: any, res: any, next: Function) => {
+app.use((err: Error, req: any, res: any, next: Function) => {
+  //@ts-ignore
+  const status = err.status || 500;
   if (req.app.get("env") === "development") {
     console.error(err);
+    res.status(status).json({
+      status,
+      result: err.message,
+      "stack-trace": err.stack
+    });
+  } else {
+    res.status().json({
+      status
+    });
   }
-  res.status(err.status || 500).send();
 });
 
 server.on("error", error => {

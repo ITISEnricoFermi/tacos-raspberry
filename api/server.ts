@@ -9,6 +9,7 @@ import cors from "cors";
 import { config } from "../config/conf";
 import { normalizePort } from "./utils/utils";
 import { SubscriveToEvent } from "../config/bus";
+import { DeviceCounter } from "../udp/manager/devicecounter";
 import IDevice from "../Iot-controller/interfaces/IDevice";
 
 // Configurazioni iniziali di porta, node_env e /api route
@@ -98,8 +99,10 @@ SubscriveToEvent("device-new", (dev: IDevice) => {
   io.sockets.emit("device-new", dev);
 });
 
-io.on("connection", socket => {
-  socket.emit("READY");
+io.on("connection", async socket => {
+  // Invia tutti i dispositivi attualmente connessi al nuovo client
+  const devs: IDevice[] = await DeviceCounter.getAll();
+  socket.emit("READY", devs);
   socket.on("disconnecting", reason => {
     console.log("Il socket si sta disconnettendo per:", reason);
   });

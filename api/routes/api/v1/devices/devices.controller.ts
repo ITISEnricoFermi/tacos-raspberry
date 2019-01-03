@@ -54,7 +54,7 @@ export async function changeState(req: any, res: any) {
     );
     res.json({ state: 200, result: "Ok" });
   } catch (e) {
-    e.code = 404;
+    if (!e.code) e.code = 404;
     handleInternalError(res, e);
   }
 }

@@ -46,8 +46,8 @@ setInterval(() => {
 }, 5000);
 
 // Test send data sulla raspberry pi
-sendData("16", "AA:BB:CC:00:22:33", JSON.stringify(device));
+sendData("1", "AA:BB:CC:00:22:33", JSON.stringify({ h: 1 }));
 setInterval(
-  () => sendData("16", "AA:BB:CC:00:22:33", JSON.stringify(device)),
+  () => sendData("6", "AA:BB:CC:00:22:33", JSON.stringify(device)),
   10000
 );

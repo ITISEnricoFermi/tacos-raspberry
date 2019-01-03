@@ -53,13 +53,21 @@ export namespace socketspace {
     let lenB: Buffer = Buffer.alloc(1);
     lenB.writeInt8(payloadB.length, 0);
 
+    if (DEBUG) {
+      console.log("Message data");
+      console.log("type -> " + typeB.length);
+      console.log("mac -> " + macB.length);
+      console.log("len -> " + lenB.length);
+      console.log("payl -> " + payloadB.length);
+    }
+
     if (
       typeB.length > 1 ||
       macB.length > 6 ||
       lenB.length > 1 ||
       payloadB.length > 255
     )
-      return Error("Invalid length for arguments");
+      throw Error("Invalid length for arguments");
 
     let message: Buffer = Buffer.concat([typeB, macB, lenB, payloadB]);
     udpsocket.send(message, DestPORT, bcAddress, err => {
@@ -67,9 +75,11 @@ export namespace socketspace {
       if (DEBUG) {
         const jsonMessage = message.toJSON();
         console.log(
-          `Sending to ${mac} [${DestPORT}] {${
-            jsonMessage.type
-          }} => ${jsonMessage.data.toString()}`
+          `Sending to ${mac} [${DestPORT}] {${jsonMessage.type}} => ${
+            jsonMessage.data.toString().length > 20
+              ? jsonMessage.data.toString().substring(0, 20)
+              : jsonMessage.data.toString()
+          }`
         );
       }
     });

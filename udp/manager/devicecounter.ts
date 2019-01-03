@@ -122,7 +122,6 @@ export namespace DeviceCounter {
    * Iscrizione al evento device-new e aggiunta del dispositivo alla lista se non presente
    */
   SubscriveToEvent("device-new", (device: IDevice) => {
-    // Clona il device altrimenti non funziona l'aggiornamento durante i test (per "più" informazioni vedere il messaggio di commit)
     create(device);
     console.log("- New Device: " + JSON.stringify(device.devid));
   });

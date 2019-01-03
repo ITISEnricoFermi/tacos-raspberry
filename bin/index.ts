@@ -34,6 +34,7 @@ let device: IDevice = createIDevice({
 PushEvent("device-new", device);
 
 setInterval(() => {
+  // Clona il device altrimenti non funziona l'aggiornamento durante i test (per "più" informazioni vedere il messaggio di commit)
   let newdevice = createIDevice(device);
   newdevice.state = Math.ceil(Math.random() * 10);
   PushEvent("device-update", newdevice);

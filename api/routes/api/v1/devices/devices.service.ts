@@ -20,8 +20,8 @@ const findDeviceById: (devid: number) => any = async (devid: number) => {
 const changeDeviceState = async (id: number, state: number): Promise<void> => {
   let device = await findDeviceById(id);
 
-  let r = do_the_thing(device.devid, state);
-  if (!r) throw Error("Non riesco a cambiare lo stato del dispositivo");
+  // TODO: change device state
+  await do_the_thing(device.devid, state);
 };
 
 /**

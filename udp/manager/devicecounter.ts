@@ -2,8 +2,11 @@ import _ from "lodash";
 import { config } from "../../config/conf";
 import { IDevice } from "../../Iot-controller/interfaces/IDevice";
 import { SubscriveToEvent, PushEvent } from "../../config/bus";
+import DeviceState from "../../Iot-controller/interfaces/DeviceState";
+import { getLogger } from "../../config/log";
+const logger = getLogger("DEVICECOUNTER");
 
-const DEBUG = config.node_env === "development";
+const TIMEOUT = config.devices_timeout;
 /**
  * DeviceCounter namespace contiene le funzioni e la lista di tutti i dispositivi attualmente attivi
  */
@@ -26,7 +29,8 @@ export namespace DeviceCounter {
     const index = devices.findIndex(dev => dev.devid === device.devid);
     if (index > -1) throw Error("Device already exists");
     devices.push(device);
-    devicesTimeout.push(setTimeout(remove, 10000, device));
+    devicesTimeout.push(setTimeout(remove, TIMEOUT, device));
+    logger.info("- New Device: " + JSON.stringify(device.devid));
   }
 
   /**
@@ -38,7 +42,8 @@ export namespace DeviceCounter {
     const index = devices.findIndex(dev => dev.devid === device.devid);
     if (index === -1) throw Error("Device not found");
     clearTimeout(devicesTimeout[index]);
-    devicesTimeout[index] = setTimeout(remove, 10000, device);
+    devicesTimeout[index] = setTimeout(remove, TIMEOUT, device);
+    logger.silly(`- Device alive: (${device.devid})[${device.mac}]`);
   }
 
   /**
@@ -47,10 +52,13 @@ export namespace DeviceCounter {
    * @returns {void}
    */
   export function remove(device: IDevice): void {
+    device.state = DeviceState.Disconnected;
+    PushEvent("device-state-changed", device);
     const index = devices.findIndex(dev => dev.devid === device.devid);
     if (index === -1) throw Error("Device not found");
     devices.splice(index, 1);
     devicesTimeout.splice(index, 1);
+    logger.silly(`- Removed Device: (${device.devid})[${device.mac}]`);
   }
 
   /**
@@ -83,48 +91,45 @@ export namespace DeviceCounter {
    */
   export function update(device: IDevice) {
     const index = devices.findIndex(dev => dev.devid === device.devid);
-    if (index === -1) return Error("Device not found");
+    if (index === -1) throw Error("Device not found");
     devices[index] = device;
+    PushEvent("device-state-changed", device);
+    logger.silly(`- Updated Device: (${device.devid})[${device.mac}]`);
   }
 
   /**
    * Iscrizione al evento device-state-change e modifica del dispositivo corrispondente nella lista dei dispositivi
    */
-  SubscriveToEvent("update-device", async (device: IDevice) => {
+  SubscriveToEvent("device-update", async (device: IDevice) => {
     try {
       const dev = await findById(device.devid);
       alive(device);
       if (dev !== device) {
-        if (DEBUG) {
-          console.log(
-            `- Updated Device (also alive): (${device.devid})[${device.mac}]`
-          );
-        }
         await update(device);
-        PushEvent("device-state-changed", device);
       }
     } catch (e) {
-      if (DEBUG) {
-        console.error(
-          `Unknown device in update-device! [{id: ${device.devid}, mac:${
-            device.mac
-          }, ...}]`
-        );
-      }
+      logger.error(
+        `Unknown device in device-update! [{id: ${device.devid}, mac:${
+          device.mac
+        }, ...}]`
+      );
     }
   });
 
   /**
-   * Iscrizione al evento new-device e aggiunta del dispositivo alla lista se non presente
+   * Iscrizione al evento device-new e aggiunta del dispositivo alla lista se non presente
    */
-  SubscriveToEvent("new-device", (device: IDevice) => {
-    console.log("- New Device: " + device);
+  SubscriveToEvent("device-new", (device: IDevice) => {
     create(device);
   });
 
   SubscriveToEvent("device-alive", (device: IDevice) => {
-    console.log("- Device Alive: " + device);
-    alive(device);
+    try {
+      alive(device);
+    } catch (err) {
+      PushEvent("device-new", device);
+      logger.warn(err);
+    }
   });
 }
 

@@ -32,7 +32,7 @@ export async function getDevice(req: any, res: any) {
   try {
     res.json({
       status: 200,
-      result: JSON.stringify(await findDeviceById(parseInt(req.params.id)))
+      result: await findDeviceById(parseInt(req.params.id))
     });
   } catch (e) {
     e.code = 404;
@@ -54,7 +54,7 @@ export async function changeState(req: any, res: any) {
     );
     res.json({ state: 200, result: "Ok" });
   } catch (e) {
-    e.code = 404;
+    if (!e.code) e.code = 404;
     handleInternalError(res, e);
   }
 }

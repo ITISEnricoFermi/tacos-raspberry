@@ -1,30 +1,39 @@
 import express from "express";
-import logger from "morgan";
+import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import socketIO from "socket.io";
 import http from "http";
 import cors from "cors";
 
 // Import delle configurazioni e file utili
+import { getLogger } from "../config/log";
+const logger = getLogger("server");
+
 import { config } from "../config/conf";
 import { normalizePort } from "./utils/utils";
-import { SubscriveToEvent } from "../config/bus";
-import IDevice from "../Iot-controller/interfaces/IDevice";
 
-// Configurazioni iniziali di porta, node_env e /api route
+// Configurazioni iniziali di porta, DEBUG e /api route
 import api from "./routes/api.route";
-const node_env = config.node_env;
+const DEBUG = config.node_env === "development";
 const port = normalizePort(config.server_port);
 
 // Inizializzazione del app express, server http e server socketio
 export const app = express();
 export const server = http.createServer(app);
-export const io = socketIO(server, { serveClient: node_env === "development" });
+export const io = socketIO(server, { serveClient: DEBUG });
 
 // Setup del sistema di logging del api rest
-app.set("env", node_env);
-if (node_env === "development") {
-  app.use(logger("dev"));
+app.set("env", config.node_env);
+if (DEBUG) {
+  app.use(
+    morgan(":method :url :status :response-time ms", {
+      stream: {
+        write(message) {
+          logger.info(message);
+        }
+      }
+    })
+  );
 }
 
 // Setup cross origin per il futuro e parsing delle richieste
@@ -53,11 +62,21 @@ app.use((req, res, next) => {
 });
 
 // Error handler
-app.use((err: any, req: any, res: any, next: Function) => {
+app.use((err: Error, req: any, res: any, next: Function) => {
+  //@ts-ignore
+  const status = err.status || 500;
   if (req.app.get("env") === "development") {
-    console.error(err);
+    logger.error(err);
+    res.status(status).json({
+      status,
+      result: err.message,
+      "stack-trace": err.stack
+    });
+  } else {
+    res.status().json({
+      status
+    });
   }
-  res.status(err.status || 500).send();
 });
 
 server.on("error", error => {
@@ -71,11 +90,11 @@ server.on("error", error => {
   //@ts-ignore
   switch (error.code) {
     case "EACCES":
-      console.error(bind + " requires elevated privileges");
+      logger.error(bind + " requires elevated privileges");
       process.exit(1);
       break;
     case "EADDRINUSE":
-      console.error(bind + " is already in use");
+      logger.error(bind + " is already in use");
       process.exit(1);
       break;
     default:
@@ -86,19 +105,7 @@ server.on("error", error => {
 server.on("listening", () => {
   let addr = server.address();
   let bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
-  console.log(`Listening on ${bind}`);
-});
-
-// Socket io stuff
-SubscriveToEvent("device-state-changed", (dev: IDevice) => {
-  io.sockets.emit("device-state-changed", dev);
-});
-
-io.on("connection", socket => {
-  socket.emit("READY");
-  socket.on("disconnecting", reason => {
-    console.log("Il socket si sta disconnettendo per:", reason);
-  });
+  logger.verbose(`Listening on ${bind}`);
 });
 
 server.listen(port);

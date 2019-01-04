@@ -1,11 +1,14 @@
 import express from "express";
-import logger from "morgan";
+import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import socketIO from "socket.io";
 import http from "http";
 import cors from "cors";
 
 // Import delle configurazioni e file utili
+import { getLogger } from "../config/log";
+const logger = getLogger("server");
+
 import { config } from "../config/conf";
 import { normalizePort } from "./utils/utils";
 
@@ -22,7 +25,7 @@ export const io = socketIO(server, { serveClient: node_env === "development" });
 // Setup del sistema di logging del api rest
 app.set("env", node_env);
 if (node_env === "development") {
-  app.use(logger("dev"));
+  app.use(morgan("dev"));
 }
 
 // Setup cross origin per il futuro e parsing delle richieste
@@ -55,7 +58,7 @@ app.use((err: Error, req: any, res: any, next: Function) => {
   //@ts-ignore
   const status = err.status || 500;
   if (req.app.get("env") === "development") {
-    console.error(err);
+    logger.error(err);
     res.status(status).json({
       status,
       result: err.message,
@@ -79,11 +82,11 @@ server.on("error", error => {
   //@ts-ignore
   switch (error.code) {
     case "EACCES":
-      console.error(bind + " requires elevated privileges");
+      logger.error(bind + " requires elevated privileges");
       process.exit(1);
       break;
     case "EADDRINUSE":
-      console.error(bind + " is already in use");
+      logger.error(bind + " is already in use");
       process.exit(1);
       break;
     default:
@@ -94,7 +97,7 @@ server.on("error", error => {
 server.on("listening", () => {
   let addr = server.address();
   let bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
-  console.log(`Listening on ${bind}`);
+  logger.verbose(`Listening on ${bind}`);
 });
 
 server.listen(port);

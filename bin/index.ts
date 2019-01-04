@@ -1,6 +1,8 @@
 /**
  * Entry point del server
  */
+import { getLogger } from "../config/log";
+const logger = getLogger("MAIN");
 
 // Setup event bus e gestione dei dispositivi
 import { PushEvent, SubscriveToEvent } from "../config/bus";
@@ -29,7 +31,7 @@ io.on("connection", async socket => {
   const devs: IDevice[] = await DeviceCounter.getAll();
   socket.emit("READY", devs);
   socket.on("disconnecting", reason => {
-    console.log("Il socket si sta disconnettendo per:", reason);
+    logger.debug("Il socket si sta disconnettendo per:", reason);
   });
 });
 

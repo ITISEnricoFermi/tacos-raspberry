@@ -3,8 +3,9 @@ import { config } from "../../config/conf";
 import { IDevice } from "../../Iot-controller/interfaces/IDevice";
 import { SubscriveToEvent, PushEvent } from "../../config/bus";
 import DeviceState from "../../Iot-controller/interfaces/DeviceState";
+import { getLogger } from "../../config/log";
+const logger = getLogger("DEVICECOUNTER");
 
-const DEBUG = config.node_env === "development";
 const TIMEOUT = config.devices_timeout;
 /**
  * DeviceCounter namespace contiene le funzioni e la lista di tutti i dispositivi attualmente attivi
@@ -29,6 +30,7 @@ export namespace DeviceCounter {
     if (index > -1) throw Error("Device already exists");
     devices.push(device);
     devicesTimeout.push(setTimeout(remove, TIMEOUT, device));
+    logger.info("- New Device: " + JSON.stringify(device.devid));
   }
 
   /**
@@ -41,6 +43,7 @@ export namespace DeviceCounter {
     if (index === -1) throw Error("Device not found");
     clearTimeout(devicesTimeout[index]);
     devicesTimeout[index] = setTimeout(remove, TIMEOUT, device);
+    logger.silly(`- Device alive: (${device.devid})[${device.mac}]`);
   }
 
   /**
@@ -55,6 +58,7 @@ export namespace DeviceCounter {
     if (index === -1) throw Error("Device not found");
     devices.splice(index, 1);
     devicesTimeout.splice(index, 1);
+    logger.silly(`- Removed Device: (${device.devid})[${device.mac}]`);
   }
 
   /**
@@ -90,6 +94,7 @@ export namespace DeviceCounter {
     if (index === -1) throw Error("Device not found");
     devices[index] = device;
     PushEvent("device-state-changed", device);
+    logger.silly(`- Updated Device: (${device.devid})[${device.mac}]`);
   }
 
   /**
@@ -101,20 +106,13 @@ export namespace DeviceCounter {
       alive(device);
       if (dev !== device) {
         await update(device);
-        if (DEBUG) {
-          console.log(
-            `- Updated Device (also alive): (${device.devid})[${device.mac}]`
-          );
-        }
       }
     } catch (e) {
-      if (DEBUG) {
-        console.error(
-          `Unknown device in device-update! [{id: ${device.devid}, mac:${
-            device.mac
-          }, ...}]`
-        );
-      }
+      logger.error(
+        `Unknown device in device-update! [{id: ${device.devid}, mac:${
+          device.mac
+        }, ...}]`
+      );
     }
   });
 
@@ -123,24 +121,14 @@ export namespace DeviceCounter {
    */
   SubscriveToEvent("device-new", (device: IDevice) => {
     create(device);
-    console.log("- New Device: " + JSON.stringify(device.devid));
   });
 
   SubscriveToEvent("device-alive", (device: IDevice) => {
     try {
       alive(device);
-      process.stdout.write(
-        " ".repeat(90) +
-          "\r" +
-          "- Device Alive: " +
-          JSON.stringify(device.devid) +
-          "\r"
-      );
     } catch (err) {
       PushEvent("device-new", device);
-      if (DEBUG) {
-        console.error(err);
-      }
+      logger.warn(err);
     }
   });
 }

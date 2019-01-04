@@ -3,7 +3,8 @@ import { config } from "../config/conf";
 import { PushEvent } from "../config/bus";
 import { IDevice, createIDevice } from "../Iot-controller/interfaces/IDevice";
 import os, { NetworkInterfaceInfo } from "os";
-const DEBUG = config.node_env === "development";
+import { getLogger } from "../config/log";
+const logger = getLogger("UDPSOCKET");
 
 export namespace socketspace {
   const RecPORT: number = config.udp_rec_port;
@@ -13,17 +14,18 @@ export namespace socketspace {
   export const udpsocket: Socket = createSocket("udp4");
 
   udpsocket.on("close", () => {
-    console.log("Socket closed.");
+    logger.info("Socket closed.");
   });
 
   udpsocket.on("error", e => {
-    if (!DEBUG) return console.log("Errore brutto nel socket udp!");
-    console.log(e.message);
+    return logger.error(e);
   });
 
   udpsocket.on("listening", () => {
     udpsocket.setBroadcast(true);
-    console.log(`Socket listening for broadcast messages on port ${RecPORT}`);
+    logger.verbose(
+      `Socket listening for broadcast messages on port ${RecPORT}`
+    );
   });
 
   udpsocket.on("message", m => {
@@ -42,7 +44,7 @@ export namespace socketspace {
           break;
       }
     } catch (e) {
-      if (DEBUG) console.log("Error on message: " + e + "\n" + m);
+      logger.warn("Error on message: " + e + "\n" + m);
     }
   });
 
@@ -53,13 +55,11 @@ export namespace socketspace {
     let lenB: Buffer = Buffer.alloc(1);
     lenB.writeInt8(payloadB.length, 0);
 
-    if (DEBUG) {
-      console.log("Message data");
-      console.log("type -> " + typeB.length);
-      console.log("mac -> " + macB.length);
-      console.log("len -> " + lenB.length);
-      console.log("payl -> " + payloadB.length);
-    }
+    logger.debug("Message data");
+    logger.debug("type -> " + typeB.length);
+    logger.debug("mac -> " + macB.length);
+    logger.debug("len -> " + lenB.length);
+    logger.debug("payl -> " + payloadB.length);
 
     if (
       typeB.length > 1 ||
@@ -71,17 +71,15 @@ export namespace socketspace {
 
     let message: Buffer = Buffer.concat([typeB, macB, lenB, payloadB]);
     udpsocket.send(message, DestPORT, bcAddress, err => {
-      if (err) return console.log(err);
-      if (DEBUG) {
-        const jsonMessage = message.toJSON();
-        console.log(
-          `Sending to ${mac} [${DestPORT}] {${jsonMessage.type}} => ${
-            jsonMessage.data.toString().length > 20
-              ? jsonMessage.data.toString().substring(0, 20)
-              : jsonMessage.data.toString()
-          }`
-        );
-      }
+      if (err) return logger.warn(err);
+      const jsonMessage = message.toJSON();
+      logger.silly(
+        `Sending to ${mac} [${DestPORT}] {${jsonMessage.type}} => ${
+          jsonMessage.data.toString().length > 20
+            ? jsonMessage.data.toString().substring(0, 20)
+            : jsonMessage.data.toString()
+        }`
+      );
     });
   }
 
@@ -120,7 +118,7 @@ export namespace socketspace {
           broadcast.push(byteBroadcast.toString());
         }
         bcAddress = broadcast.join(".");
-        if (DEBUG) console.log("Broadcast address: " + bcAddress);
+        logger.verbose("Broadcast address: " + bcAddress);
       });
     });
   }

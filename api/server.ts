@@ -12,20 +12,28 @@ const logger = getLogger("server");
 import { config } from "../config/conf";
 import { normalizePort } from "./utils/utils";
 
-// Configurazioni iniziali di porta, node_env e /api route
+// Configurazioni iniziali di porta, DEBUG e /api route
 import api from "./routes/api.route";
-const node_env = config.node_env;
+const DEBUG = config.node_env === "development";
 const port = normalizePort(config.server_port);
 
 // Inizializzazione del app express, server http e server socketio
 export const app = express();
 export const server = http.createServer(app);
-export const io = socketIO(server, { serveClient: node_env === "development" });
+export const io = socketIO(server, { serveClient: DEBUG });
 
 // Setup del sistema di logging del api rest
-app.set("env", node_env);
-if (node_env === "development") {
-  app.use(morgan("dev"));
+app.set("env", config.node_env);
+if (DEBUG) {
+  app.use(
+    morgan(":method :url :status :response-time ms", {
+      stream: {
+        write(message) {
+          logger.info(message);
+        }
+      }
+    })
+  );
 }
 
 // Setup cross origin per il futuro e parsing delle richieste

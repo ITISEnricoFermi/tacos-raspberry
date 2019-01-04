@@ -2,8 +2,9 @@
  * Entry point del server
  */
 
-// Setup event bus e mongoose
-import { PushEvent } from "../config/bus";
+// Setup event bus e gestione dei dispositivi
+import { PushEvent, SubscriveToEvent } from "../config/bus";
+import { DeviceCounter } from "../udp/manager/devicecounter";
 
 // Setup udp socket
 import { sendData } from "../udp/udpsocket";
@@ -11,8 +12,26 @@ import { IDevice, createIDevice } from "../Iot-controller/interfaces/IDevice";
 export { sendData };
 
 // Setup API
-import { server } from "../api/server";
+import { server, io } from "../api/server";
 export { server };
+
+// Socket io stuff
+SubscriveToEvent("device-state-changed", (dev: IDevice) => {
+  io.sockets.emit("device-state-changed", dev);
+});
+
+SubscriveToEvent("device-new", (dev: IDevice) => {
+  io.sockets.emit("device-new", dev);
+});
+
+io.on("connection", async socket => {
+  // Invia tutti i dispositivi attualmente connessi al nuovo client connesso
+  const devs: IDevice[] = await DeviceCounter.getAll();
+  socket.emit("READY", devs);
+  socket.on("disconnecting", reason => {
+    console.log("Il socket si sta disconnettendo per:", reason);
+  });
+});
 
 // testing some things
 import { mock_devices } from "../Iot-controller/mock/devices";

@@ -3,6 +3,7 @@ import { config } from "./conf";
 const { transports, createLogger, format } = winston;
 const { printf, combine, label, timestamp, colorize } = format;
 
+// FIXME: Da documentare
 export namespace FDLogger {
   export enum LogLevel {
     error = "error",
@@ -31,11 +32,13 @@ export namespace FDLogger {
         }),
         new transports.File({
           level: LogLevel.silly,
-          filename: config.log_file || "logfile.log"
+          filename: config.log_file || "logfile.log",
+          maxsize: config.log_file_max_size || 5000000
         }),
         new transports.File({
           level: LogLevel.error,
-          filename: config.log_err_file || "errlog.log"
+          filename: config.log_err_file || "errlog.log",
+          maxsize: config.log_file_max_size || 5000000
         })
       ]
     });

@@ -6,12 +6,12 @@ const { printf, combine, label, timestamp, colorize } = format;
 // FIXME: Da documentare
 export namespace FDLogger {
   export enum LogLevel {
-    error = "error",
-    warn = "warn",
-    info = "info",
-    verbose = "verbose",
-    debug = "debug",
-    silly = "silly"
+    error = "error", // level 0
+    warn = "warn", // level 1
+    info = "info", // level 2
+    verbose = "verbose", // level 3
+    debug = "debug", // level 4
+    silly = "silly" // level 5
   }
 
   const myFormat = printf(info => {
@@ -31,7 +31,7 @@ export namespace FDLogger {
           format: combine(colorize(), _label, _timestamp, myFormat)
         }),
         new transports.File({
-          level: LogLevel.silly,
+          level: LogLevel.debug,
           filename: config.log_file || "logfile.log",
           maxsize: config.log_file_max_size || 5000000
         }),

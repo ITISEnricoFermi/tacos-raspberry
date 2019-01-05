@@ -22,6 +22,11 @@ export namespace FDLogger {
     const _label = label({ label: name });
     const _timestamp = timestamp();
 
+    // Max file size sanity check
+    const file_size: number = isNaN(config.log_file_max_size)
+      ? 5000000
+      : config.log_file_max_size;
+
     return createLogger({
       level: config.log_level || LogLevel.silly,
       format: combine(_label, _timestamp, myFormat),
@@ -33,12 +38,12 @@ export namespace FDLogger {
         new transports.File({
           level: LogLevel.silly,
           filename: config.log_file || "logfile.log",
-          maxsize: config.log_file_max_size || 5000000
+          maxsize: file_size
         }),
         new transports.File({
           level: LogLevel.error,
           filename: config.log_err_file || "errlog.log",
-          maxsize: config.log_file_max_size || 5000000
+          maxsize: file_size
         })
       ]
     });

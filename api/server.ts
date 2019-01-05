@@ -24,17 +24,15 @@ export const io = socketIO(server, { serveClient: DEBUG });
 
 // Setup del sistema di logging del api rest
 app.set("env", config.node_env);
-if (DEBUG) {
-  app.use(
-    morgan(":method :url :status :response-time ms", {
-      stream: {
-        write(message) {
-          logger.info(message);
-        }
+app.use(
+  morgan(":method :url :status :response-time ms", {
+    stream: {
+      write(message) {
+        logger.info(message);
       }
-    })
-  );
-}
+    }
+  })
+);
 
 // Setup cross origin per il futuro e parsing delle richieste
 app.use(
@@ -66,7 +64,6 @@ app.use((err: Error, req: any, res: any, next: Function) => {
   //@ts-ignore
   const status = err.status || 500;
   if (req.app.get("env") === "development") {
-    logger.error(err);
     res.status(status).json({
       status,
       result: err.message,
@@ -74,9 +71,12 @@ app.use((err: Error, req: any, res: any, next: Function) => {
     });
   } else {
     res.status().json({
-      status
+      status,
+      result: ""
     });
   }
+
+  logger.error(err);
 });
 
 server.on("error", error => {

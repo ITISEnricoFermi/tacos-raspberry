@@ -28,10 +28,14 @@ SubscriveToEvent("device-new", (dev: IDevice) => {
 
 io.on("connection", async socket => {
   // Invia tutti i dispositivi attualmente connessi al nuovo client connesso
-  const devs: IDevice[] = await DeviceCounter.getAll();
-  socket.emit("READY", devs);
+  socket.emit("READY", await DeviceCounter.getAll());
+
+  socket.on("--", (dev: IDevice) => {
+    logger.debug(`Ricevuto device ${JSON.stringify(dev)}`);
+  });
+
   socket.on("disconnecting", reason => {
-    logger.debug("Il socket si sta disconnettendo per:", reason);
+    logger.debug(`Il socket si sta disconnettendo per: ${reason}`);
   });
 });
 

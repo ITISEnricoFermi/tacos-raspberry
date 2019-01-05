@@ -55,12 +55,6 @@ export namespace socketspace {
     let lenB: Buffer = Buffer.alloc(1);
     lenB.writeInt8(payloadB.length, 0);
 
-    logger.debug("Message data");
-    logger.debug("type -> " + typeB.length);
-    logger.debug("mac -> " + macB.length);
-    logger.debug("len -> " + lenB.length);
-    logger.debug("payl -> " + payloadB.length);
-
     if (
       typeB.length > 1 ||
       macB.length > 6 ||

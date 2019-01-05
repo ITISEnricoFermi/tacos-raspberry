@@ -14,6 +14,9 @@ import { normalizePort } from "./utils/utils";
 
 // Configurazioni iniziali di porta, DEBUG e /api route
 import api from "./routes/api.route";
+import { SubscriveToEvent } from "../config/bus";
+import DeviceCounter from "../udp/manager/devicecounter";
+import { IDevice } from "../Iot-controller/interfaces/IDevice";
 const DEBUG = config.node_env === "development";
 const port = normalizePort(config.server_port);
 
@@ -106,6 +109,30 @@ server.on("listening", async () => {
   let addr = server.address();
   let bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
   logger.verbose(`Listening on ${bind}`);
+});
+
+const sklogger = getLogger("SOCKET.IO");
+
+// Socket io stuff
+SubscriveToEvent("device-state-changed", async (dev: IDevice) => {
+  io.sockets.emit("device-state-changed", dev);
+});
+
+SubscriveToEvent("device-new", async (dev: IDevice) => {
+  io.sockets.emit("device-new", dev);
+});
+
+io.on("connection", async socket => {
+  // Invia tutti i dispositivi attualmente connessi al nuovo client connesso
+  socket.emit("READY", await DeviceCounter.getAll());
+
+  socket.on("--", async (dev: IDevice) => {
+    sklogger.debug(`Ricevuto device ${JSON.stringify(dev)}`);
+  });
+
+  socket.on("disconnecting", async reason => {
+    sklogger.debug(`Il socket si sta disconnettendo per: ${reason}`);
+  });
 });
 
 server.listen(port);

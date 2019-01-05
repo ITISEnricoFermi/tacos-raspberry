@@ -18,7 +18,7 @@ export namespace socketspace {
   });
 
   udpsocket.on("error", e => {
-    return logger.error(e);
+    logger.error(e);
   });
 
   udpsocket.on("listening", () => {

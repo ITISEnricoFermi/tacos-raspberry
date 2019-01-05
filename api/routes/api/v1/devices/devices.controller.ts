@@ -64,7 +64,7 @@ export async function changeState(req: any, res: any) {
  * @param res Express response object
  * @param e Oggetto con le informazioni relative al errore
  */
-function handleInternalError(res: any, e: any) {
+async function handleInternalError(res: any, e: any) {
   if (res.app.get("env") === "development") {
     res.status(e.code).json({
       status: e.code,

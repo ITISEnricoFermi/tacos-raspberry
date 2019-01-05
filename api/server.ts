@@ -52,7 +52,7 @@ app.use(cookieParser());
 // Bind della route /api
 app.use("/api", api);
 
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
   let err = new Error("Not Found");
   // @ts-ignore
   err.status = 404;
@@ -60,7 +60,7 @@ app.use((req, res, next) => {
 });
 
 // Error handler
-app.use((err: Error, req: any, res: any, next: Function) => {
+app.use(async (err: Error, req: any, res: any, next: Function) => {
   //@ts-ignore
   const status = err.status || 500;
   if (req.app.get("env") === "development") {
@@ -79,7 +79,7 @@ app.use((err: Error, req: any, res: any, next: Function) => {
   logger.error(err);
 });
 
-server.on("error", error => {
+server.on("error", async error => {
   //@ts-ignore
   if (error.syscall !== "listen") {
     throw error;
@@ -102,7 +102,7 @@ server.on("error", error => {
   }
 });
 
-server.on("listening", () => {
+server.on("listening", async () => {
   let addr = server.address();
   let bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
   logger.verbose(`Listening on ${bind}`);

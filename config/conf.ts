@@ -4,7 +4,7 @@ export const config = {
   devices_timeout: 10000, // Timeout per la disconnessione di un dispositivo nel caso non si ricevano più pachetti keep-alive
   udp_rec_port: Number(process.env.REC_PORT) || 0xcafe,
   udp_dest_port: Number(process.env.DEST_PORT) || 0xbeef,
-  log_level: "silly",
+  log_level: process.env.LOG_LEVEL || "silly",
   log_file: "./logs.log",
   log_err_file: "./err-logs.log",
   log_file_max_size: 5000000 // massima grandezza file di log in bytes (5MB)

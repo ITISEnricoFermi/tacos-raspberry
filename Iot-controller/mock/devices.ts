@@ -7,8 +7,8 @@ export function mock_devices(): IDevice[] {
     {
       devid: 0x23,
       mac: "00:ff:ff:ff",
-      type: DeviceType.Binary,
-      state: DeviceState.Off
+      type: DeviceType.Lampadina,
+      state: DeviceState.Ok
     },
     {
       devid: 0x32,
@@ -19,14 +19,14 @@ export function mock_devices(): IDevice[] {
     {
       devid: 0x12,
       mac: "00:ff:f2:ff",
-      type: DeviceType.Binary,
-      state: DeviceState.On
+      type: DeviceType.Lampadina,
+      state: DeviceState.Ok
     },
     {
       devid: 0x2,
       mac: "00:ff:ff:fa",
       type: DeviceType.None,
-      state: DeviceState.None
+      state: DeviceState.Unknown
     }
   ];
 }

@@ -6,7 +6,7 @@ import { IDevice } from "../Iot-controller/interfaces/IDevice";
 import { server } from "./httpserver";
 import { config } from "../config/conf";
 import { getLogger } from "../config/log";
-import { normalizePort } from "./utils/utils";
+import { normalizePort, toClientDev } from "./utils/utils";
 const logger = getLogger("SOCKET.IO");
 
 const DEBUG = config.node_env === "development";
@@ -17,23 +17,23 @@ export { server };
 export default io;
 
 // Socket io stuff
-SubscriveToEvent("device-state-changed", async (dev: IDevice) => {
-  io.sockets.emit("device-state-changed", dev);
+SubscriveToEvent("device-state-changed", (dev: IDevice) => {
+  io.sockets.emit("device-state-changed", toClientDev(dev));
 });
 
 SubscriveToEvent("device-new", async (dev: IDevice) => {
-  io.sockets.emit("device-new", dev);
+  io.sockets.emit("device-new", toClientDev(dev));
 });
 
 io.on("connection", async socket => {
   // Invia tutti i dispositivi attualmente connessi al nuovo client connesso
-  socket.emit("READY", await DeviceCounter.getAll());
+  socket.emit("READY", (await DeviceCounter.getAll()).map(toClientDev));
 
-  socket.on("--", async (dev: IDevice) => {
+  socket.on("--", (dev: IDevice) => {
     logger.debug(`Ricevuto device ${JSON.stringify(dev)}`);
   });
 
-  socket.on("disconnecting", async reason => {
+  socket.on("disconnecting", reason => {
     logger.debug(`Il socket si sta disconnettendo per: ${reason}`);
   });
 });

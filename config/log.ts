@@ -1,7 +1,8 @@
 import winston = require("winston");
+import moment from "moment";
 import { config } from "./conf";
 const { transports, createLogger, format } = winston;
-const { printf, combine, label, timestamp, colorize } = format;
+const { printf, combine, label, colorize } = format;
 
 // FIXME: Da documentare
 export namespace FDLogger {
@@ -14,21 +15,31 @@ export namespace FDLogger {
     silly = "silly" // level 5
   }
 
-  const myFormat = printf(info => {
-    return `[${info.timestamp}] [${info.level}] ${info.label}: ${info.message}`;
-  });
+  const myFormat = () => {
+    return printf(info => {
+      let message = "";
+      let prefix = `[${moment()
+        .format("DD-MM-YYYY hh:mm:ss")
+        .trim()}] [${info.level}] ${info.label.toUpperCase()}:`;
+      if (info.splat) {
+        message = `${prefix} ${info.message} ${info.splat}`;
+      } else {
+        message = `${prefix} ${info.message}`;
+      }
+      return message;
+    });
+  };
 
   function createWinstoneLogger(name: string): winston.Logger {
     const _label = label({ label: name });
-    const _timestamp = timestamp();
 
     return createLogger({
       level: config.log_level || LogLevel.silly,
-      format: combine(_label, _timestamp, myFormat),
+      format: combine(_label, myFormat()),
       transports: [
         new transports.Console({
           level: config.log_level || LogLevel.debug,
-          format: combine(colorize(), _label, _timestamp, myFormat)
+          format: combine(colorize(), _label, myFormat())
         }),
         new transports.File({
           level: LogLevel.debug,

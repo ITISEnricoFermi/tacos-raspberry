@@ -3,8 +3,7 @@
  */
 export enum DeviceType {
   None = 0,
-  Binary,
-  Modulable
+  Lampadina
 }
 
 export default DeviceType;

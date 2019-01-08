@@ -18,7 +18,7 @@ export namespace socketspace {
   });
 
   udpsocket.on("error", e => {
-    return logger.error(e);
+    logger.error(e);
   });
 
   udpsocket.on("listening", () => {
@@ -54,12 +54,6 @@ export namespace socketspace {
     let payloadB: Buffer = Buffer.from(payload);
     let lenB: Buffer = Buffer.alloc(1);
     lenB.writeInt8(payloadB.length, 0);
-
-    logger.debug("Message data");
-    logger.debug("type -> " + typeB.length);
-    logger.debug("mac -> " + macB.length);
-    logger.debug("len -> " + lenB.length);
-    logger.debug("payl -> " + payloadB.length);
 
     if (
       typeB.length > 1 ||

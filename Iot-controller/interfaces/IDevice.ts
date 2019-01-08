@@ -12,13 +12,15 @@ export function createIDevice(device): IDevice {
 }
 
 /**
- * Caratteristiche che dovrà avere un dispositivo per venir considerato tale
+ * Caratteristiche che dovrà avere un dispositivo per venir considerato tale;
+ * a seconda del type verranno aggiunte altre informazzioni al oggetto device
  */
 export interface IDevice {
   devid: number;
   mac: string;
   state: DeviceState;
   type: DeviceType;
+  [key: string]: any;
 }
 
 export default IDevice;

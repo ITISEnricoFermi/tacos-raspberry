@@ -1,6 +1,7 @@
 import { do_the_thing } from "../../../../../Iot-controller/services/lights";
 import { DeviceType } from "../../../../../Iot-controller/interfaces/DeviceType";
 import { DeviceCounter } from "../../../../../udp/manager/devicecounter";
+import { toClientDev } from "../../../../utils/utils";
 
 /**
  * Funzione wrapper attorno alla funzione findById nel namespace DeviceCounter
@@ -8,7 +9,7 @@ import { DeviceCounter } from "../../../../../udp/manager/devicecounter";
  * @param devid Id del dispositivo da trovare
  */
 const findDeviceById: (devid: number) => any = async (devid: number) => {
-  return DeviceCounter.findById(devid);
+  return toClientDev(await DeviceCounter.findById(devid));
 };
 
 /**
@@ -28,7 +29,8 @@ const changeDeviceState = async (id: number, state: number): Promise<void> => {
  * Funzione wrapper attorno alla funzione getAll nel namespace DeviceCounter
  * @returns {Promise<IDevice[]>}
  */
-const getAllActiveDevices = async () => await DeviceCounter.getAll();
+const getAllActiveDevices = async () =>
+  (await DeviceCounter.getAll()).map(toClientDev);
 
 /**
  * Cerca un dispositivo e ne restituisce lo stato in quel momento

@@ -25,7 +25,7 @@ export namespace DeviceCounter {
    * @throws {Error} - Device already exists
    * @returns {void}
    */
-  export function create(device: IDevice): void {
+  export async function create(device: IDevice): Promise<void> {
     const index = devices.findIndex(dev => dev.devid === device.devid);
     if (index > -1) throw Error("Device already exists");
     devices.push(device);
@@ -38,7 +38,7 @@ export namespace DeviceCounter {
    * @throws {Error} - Device not found
    * @returns {void}
    */
-  export function alive(device: IDevice): void {
+  export async function alive(device: IDevice): Promise<void> {
     const index = devices.findIndex(dev => dev.devid === device.devid);
     if (index === -1) throw Error("Device not found");
     clearTimeout(devicesTimeout[index]);
@@ -51,7 +51,7 @@ export namespace DeviceCounter {
    * @throws {Error} - Device not found
    * @returns {void}
    */
-  export function remove(device: IDevice): void {
+  export async function remove(device: IDevice): Promise<void> {
     device.state = DeviceState.Disconnected;
     PushEvent("device-state-changed", device);
     const index = devices.findIndex(dev => dev.devid === device.devid);
@@ -65,10 +65,8 @@ export namespace DeviceCounter {
    * Richiede la lista dei dispositivi attualmente attivi
    * @returns {Promise<IDevice>} tutti i dispositivi
    */
-  export function getAll(): Promise<IDevice[]> {
-    return new Promise(resolve => {
-      resolve(devices);
-    });
+  export async function getAll(): Promise<IDevice[]> {
+    return devices;
   }
 
   /**
@@ -76,12 +74,12 @@ export namespace DeviceCounter {
    * @param devId Id di un dispositivo
    * @returns {Promise<IDevice>} un dispositivo o un errore nel caso il dispositivo non venga trovato
    */
-  export function findById(devId: number): Promise<IDevice> {
-    return new Promise((resolve, reject) => {
-      const device = devices.find(dev => dev.devid === devId);
-      if (device) return resolve(device);
-      reject(Error("No device found"));
-    });
+  export async function findById(devId: number): Promise<IDevice> {
+    const device = devices.find(dev => dev.devid === devId);
+
+    if (device) return device;
+
+    throw Error("No device found");
   }
 
   /**
@@ -89,7 +87,7 @@ export namespace DeviceCounter {
    * o ritorna un errore se il dispositivo non è presente nella lista
    * @param device Dispositivo da aggiornare
    */
-  export function update(device: IDevice) {
+  export async function update(device: IDevice): Promise<void> {
     const index = devices.findIndex(dev => dev.devid === device.devid);
     if (index === -1) throw Error("Device not found");
     devices[index] = device;
@@ -119,13 +117,13 @@ export namespace DeviceCounter {
   /**
    * Iscrizione al evento device-new e aggiunta del dispositivo alla lista se non presente
    */
-  SubscriveToEvent("device-new", (device: IDevice) => {
-    create(device);
+  SubscriveToEvent("device-new", async (device: IDevice) => {
+    await create(device);
   });
 
-  SubscriveToEvent("device-alive", (device: IDevice) => {
+  SubscriveToEvent("device-alive", async (device: IDevice) => {
     try {
-      alive(device);
+      await alive(device);
     } catch (err) {
       PushEvent("device-new", device);
       logger.warn(err);

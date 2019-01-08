@@ -17,7 +17,7 @@ export const app = express();
 // Setup del sistema di logging del api rest
 app.set("env", config.node_env);
 app.use(
-  morgan(":method :url :status :response-time ms", {
+  morgan(":user-agent :remote-addr :method :url :status :response-time ms", {
     stream: {
       write(message) {
         logger.info(message);

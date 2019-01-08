@@ -5,14 +5,16 @@ import {
   changeDeviceState,
   getAllActiveDevices
 } from "./devices.service";
+import { CustomRequest, CustomResponse } from "../../../../utils/utils";
 
 /**
  * Invia al client un oggetto json con un array di tutti i devices
  * @param req Express request object
  * @param res Express response object
  */
-export async function getDevices(req: any, res: any) {
+export async function getDevices(req: CustomRequest, res: CustomResponse) {
   try {
+    req.log.info("Richisti tutti i dispositivi.");
     res.json({
       status: 200,
       result: await getAllActiveDevices()
@@ -28,8 +30,9 @@ export async function getDevices(req: any, res: any) {
  * @param req Express request object
  * @param res Express response object
  */
-export async function getDevice(req: any, res: any) {
+export async function getDevice(req: CustomRequest, res: CustomResponse) {
   try {
+    req.log.info(`Richisto dispositivo ${req.params.id}`);
     res.json({
       status: 200,
       result: await findDeviceById(parseInt(req.params.id))
@@ -46,7 +49,7 @@ export async function getDevice(req: any, res: any) {
  * @param req Express request object
  * @param res Express response object
  */
-export async function changeState(req: any, res: any) {
+export async function changeState(req: CustomRequest, res: CustomResponse) {
   try {
     await changeDeviceState(
       parseInt(req.params.id, 10),
@@ -64,7 +67,9 @@ export async function changeState(req: any, res: any) {
  * @param res Express response object
  * @param e Oggetto con le informazioni relative al errore
  */
-async function handleInternalError(res: any, e: any) {
+async function handleInternalError(res: CustomResponse, e: any) {
+  res.log.error(`Errore ${e}`);
+
   if (res.app.get("env") === "development") {
     res.status(e.code).json({
       status: e.code,

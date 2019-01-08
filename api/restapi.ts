@@ -16,6 +16,13 @@ export const app = express();
 
 // Setup del sistema di logging del api rest
 app.set("env", config.node_env);
+app.use((req, res, next) => {
+  //@ts-ignore
+  req.log = logger;
+  //@ts-ignore
+  res.log = logger;
+  next();
+});
 app.use(
   morgan(":user-agent :remote-addr :method :url :status :response-time ms", {
     stream: {
@@ -52,11 +59,11 @@ app.use(async (req, res, next) => {
 });
 
 // Error handler
-app.use(async (err: Error, req: any, res: any, next: Function) => {
+app.use((err: Error, req: any, res: any, next: Function) => {
+  req.log.error(`Errore ${err}`);
   //@ts-ignore
   const status = err.status || 500;
   if (req.app.get("env") === "development") {
-    logger.error(err);
     res.status(status).json({
       status,
       result: err.message,

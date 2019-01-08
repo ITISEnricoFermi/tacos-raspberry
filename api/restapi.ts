@@ -10,16 +10,16 @@ const logger = getLogger("EXPRESS-APP");
 
 // Configurazioni iniziali di porta, DEBUG e /api route
 import api from "./routes/api.route";
+import { CustomRequest, CustomResponse, CNextFunction } from "./utils/utils";
 
 // Inizializzazione del app express, server http e server socketio
 export const app = express();
 
 // Setup del sistema di logging del api rest
 app.set("env", config.node_env);
-app.use((req, res, next) => {
-  //@ts-ignore
+app.use((req: CustomRequest, res: CustomResponse, next: CNextFunction) => {
+  // Set logger in modo che sia utilizzabile da tutti i handler e middleware
   req.log = logger;
-  //@ts-ignore
   res.log = logger;
   next();
 });
@@ -51,27 +51,36 @@ app.use(cookieParser());
 // Bind della route /api
 app.use("/api", api);
 
-app.use(async (req, res, next) => {
-  let err = new Error("Not Found");
-  // @ts-ignore
-  err.status = 404;
-  next(err);
-});
+app.use(
+  async (req: CustomRequest, res: CustomResponse, next: CNextFunction) => {
+    let err = new Error("Not Found");
+    // @ts-ignore
+    err.status = 404;
+    next(err);
+  }
+);
 
 // Error handler
-app.use((err: Error, req: any, res: any, next: Function) => {
-  req.log.error(`Errore ${err}`);
-  //@ts-ignore
-  const status = err.status || 500;
-  if (req.app.get("env") === "development") {
-    res.status(status).json({
-      status,
-      result: err.message,
-      "stack-trace": err.stack
-    });
-  } else {
-    res.status().json({
-      status
-    });
+app.use(
+  (
+    err: Error,
+    req: CustomRequest,
+    res: CustomResponse,
+    next: CNextFunction
+  ) => {
+    req.log.error(`Errore ${err}`);
+    //@ts-ignore
+    const status = err.status || 500;
+    if (req.app.get("env") === "development") {
+      res.status(status).json({
+        status,
+        result: err.message,
+        "stack-trace": err.stack
+      });
+    } else {
+      res.status(status).json({
+        status
+      });
+    }
   }
-});
+);

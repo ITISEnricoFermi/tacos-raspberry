@@ -25,7 +25,7 @@ export namespace DeviceCounter {
    * @throws {Error} - Device already exists
    * @returns {void}
    */
-  export async function create(device: IDevice): Promise<void> {
+  export function create(device: IDevice): void {
     const index = devices.findIndex(dev => dev.devid === device.devid);
     if (index > -1) throw Error("Device already exists");
     devices.push(device);
@@ -38,7 +38,7 @@ export namespace DeviceCounter {
    * @throws {Error} - Device not found
    * @returns {void}
    */
-  export async function alive(device: IDevice): Promise<void> {
+  export function alive(device: IDevice): void {
     const index = devices.findIndex(dev => dev.devid === device.devid);
     if (index === -1) throw Error("Device not found");
     clearTimeout(devicesTimeout[index]);
@@ -51,7 +51,7 @@ export namespace DeviceCounter {
    * @throws {Error} - Device not found
    * @returns {void}
    */
-  export async function remove(device: IDevice): Promise<void> {
+  export function remove(device: IDevice): void {
     device.state = DeviceState.Disconnected;
     PushEvent("device-state-changed", device);
     const index = devices.findIndex(dev => dev.devid === device.devid);
@@ -74,7 +74,7 @@ export namespace DeviceCounter {
    * @param devId Id di un dispositivo
    * @returns {Promise<IDevice>} un dispositivo o un errore nel caso il dispositivo non venga trovato
    */
-  export async function findById(devId: number): Promise<IDevice> {
+  export function findById(devId: number): IDevice {
     const device = devices.find(dev => dev.devid === devId);
 
     if (device) return device;
@@ -87,7 +87,7 @@ export namespace DeviceCounter {
    * o ritorna un errore se il dispositivo non è presente nella lista
    * @param device Dispositivo da aggiornare
    */
-  export async function update(device: IDevice): Promise<void> {
+  export function update(device: IDevice): void {
     const index = devices.findIndex(dev => dev.devid === device.devid);
     if (index === -1) throw Error("Device not found");
     devices[index] = device;
@@ -117,13 +117,13 @@ export namespace DeviceCounter {
   /**
    * Iscrizione al evento device-new e aggiunta del dispositivo alla lista se non presente
    */
-  SubscriveToEvent("device-new", async (device: IDevice) => {
-    await create(device);
+  SubscriveToEvent("device-new", (device: IDevice) => {
+    create(device);
   });
 
-  SubscriveToEvent("device-alive", async (device: IDevice) => {
+  SubscriveToEvent("device-alive", (device: IDevice) => {
     try {
-      await alive(device);
+      alive(device);
     } catch (err) {
       PushEvent("device-new", device);
       logger.warn(err);

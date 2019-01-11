@@ -38,21 +38,21 @@ let device: IDevice = createIDevice({
 
 PushEvent("device-new", device);
 
-setInterval(async () => {
+setInterval(() => {
   // Clona il device altrimenti non funziona l'aggiornamento durante i test (per "più" informazioni vedere il messaggio di commit)
-  let newdevice = await createIDevice(device);
+  let newdevice = createIDevice(device);
   newdevice.state = Math.ceil(Math.random() * 10);
   PushEvent("device-update", newdevice);
   device = newdevice;
 }, 10000);
 
-setInterval(async () => {
+setInterval(() => {
   PushEvent("device-alive", device);
 }, 5000);
 
 // Test send data sulla raspberry pi
 sendData("1", "AA:BB:CC:00:22:33", JSON.stringify({ h: 1 }));
 setInterval(
-  async () => sendData("6", "AA:BB:CC:00:22:33", JSON.stringify(device)),
+  () => sendData("6", "AA:BB:CC:00:22:33", JSON.stringify(device)),
   10000
 );

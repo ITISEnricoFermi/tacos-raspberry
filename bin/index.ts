@@ -1,6 +1,9 @@
 /**
  * Entry point del server
  */
+// Compila gli import e mette in cache per import più performanti
+import "v8-compile-cache";
+
 import { getLogger } from "../config/log";
 const logger = getLogger("MAIN");
 

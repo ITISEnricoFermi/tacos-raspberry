@@ -2,6 +2,7 @@ import express from "express";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import path from "path";
 
 // Import delle configurazioni e file utili
 import { config } from "../config/conf";
@@ -23,6 +24,7 @@ app.use((req: CustomRequest, res: CustomResponse, next: CNextFunction) => {
   res.log = logger;
   next();
 });
+
 app.use(
   morgan(":user-agent :remote-addr :method :url :status :response-time ms", {
     stream: {
@@ -37,8 +39,7 @@ app.use(
 app.use(
   cors({
     origin: "*",
-    credentials: true,
-    //method: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: false,
     preflightContinue: false,
     optionsSuccessStatus: 204
   })
@@ -51,14 +52,14 @@ app.use(cookieParser());
 // Bind della route /api
 app.use("/api", api);
 
-app.use(
-  async (req: CustomRequest, res: CustomResponse, next: CNextFunction) => {
-    let err = new Error("Not Found");
-    // @ts-ignore
-    err.status = 404;
-    next(err);
-  }
-);
+app.use("/public", express.static(path.join(__dirname, "/public")));
+
+app.use((req: CustomRequest, res: CustomResponse, next: CNextFunction) => {
+  let err = new Error("Not Found");
+  // @ts-ignore
+  err.status = 404;
+  next(err);
+});
 
 // Error handler
 app.use(
@@ -68,7 +69,7 @@ app.use(
     res: CustomResponse,
     next: CNextFunction
   ) => {
-    req.log.error(`Errore ${err}`);
+    req.log.error(`${err}`);
     //@ts-ignore
     const status = err.status || 500;
     if (req.app.get("env") === "development") {

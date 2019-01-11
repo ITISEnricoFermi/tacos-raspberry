@@ -30,7 +30,7 @@
     "build": "tsc",
     "build-watch": "tsc -w",
     "install": "npm run build",
-    "start": "cross-env NODE_ENV=XD node dist/bin/index.js",
+    "start": "cross-env NODE_ENV=production node dist/bin/index.js",
     "dev": "node dist/bin/index.js",
     "dev-watch": "node_modules/.bin/nodemon dist/bin/index.js"
   },

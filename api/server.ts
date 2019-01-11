@@ -9,10 +9,9 @@ import { getLogger } from "../config/log";
 import { normalizePort, toClientDev } from "./utils/utils";
 const logger = getLogger("SOCKET.IO");
 
-const DEBUG = config.node_env === "development";
 const port = normalizePort(config.server_port);
 
-export const io: SocketIO.Server = socketIO(server, { serveClient: DEBUG });
+export const io: SocketIO.Server = socketIO(server, { serveClient: true });
 export { server };
 export default io;
 

@@ -82,14 +82,7 @@ app.use(
         )
       );
     } else {
-      res.status(status).json(
-        add_error_to_object(
-          {
-            status
-          },
-          err
-        )
-      );
+      res.status(status).json(add_error_to_object({}, err));
     }
   }
 );

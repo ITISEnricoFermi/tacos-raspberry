@@ -52,7 +52,7 @@ app.use(cookieParser());
 // Bind della route /api
 app.use("/api", api);
 
-app.use("/public", express.static(path.join(__dirname, "/public")));
+app.use(express.static(path.join(__dirname, "/public")));
 
 app.use((req: CustomRequest, res: CustomResponse, next: CNextFunction) => {
   let err = new Error("Not Found");

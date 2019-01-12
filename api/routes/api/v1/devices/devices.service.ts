@@ -1,7 +1,12 @@
-import { do_the_thing } from "../../../../../Iot-controller/services/lights";
 import { DeviceType } from "../../../../../Iot-controller/interfaces/DeviceType";
 import { DeviceCounter } from "../../../../../udp/manager/devicecounter";
 import { toClientDev } from "../../../../utils/utils";
+import { PushEvent } from "../../../../../config/bus";
+import {
+  IDevice,
+  createIDevice
+} from "../../../../../Iot-controller/interfaces/IDevice";
+import DeviceState from "../../../../../Iot-controller/interfaces/DeviceState";
 
 /**
  * Funzione wrapper attorno alla funzione findById nel namespace DeviceCounter
@@ -18,12 +23,13 @@ const findDeviceById: (devid: number) => any = async (devid: number) => {
  * @param id Id del dispositivo da aggiornare
  * @param state nuovo stato del dispositivo
  */
-const changeDeviceState = async (id: number, state: number): Promise<void> => {
-  let device = await findDeviceById(id);
-
-  // TODO: change device state
-  await do_the_thing(device.devid, state);
-
+const changeDeviceState = async (
+  id: number,
+  state: number
+): Promise<IDevice> => {
+  let device = createIDevice(await findDeviceById(id));
+  PushEvent("change-state", device, state);
+  device.state = DeviceState.Busy;
   return device;
 };
 

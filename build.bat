@@ -8,11 +8,11 @@ echo  Init submodule
 call git submodule init
 
 echo  Done
-echo Clone submodule
+echo  Clone submodule
 
 call git submodule update
 
-echo Done
+echo  Done
 
 echo Building server...
 

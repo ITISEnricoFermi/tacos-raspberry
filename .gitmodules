@@ -1,0 +1,3 @@
+[submodule "api/client"]
+	path = api/client
+	url = git@github.com:ITISEnricoFermi/tacos-client.git

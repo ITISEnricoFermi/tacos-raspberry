@@ -19,7 +19,7 @@ export namespace FDLogger {
     return printf(info => {
       let message = "";
       let prefix = `[${moment()
-        .format("DD-MM-YYYY hh:mm:ss")
+        .format("DD-MM-YYYY HH:mm:ss")
         .trim()}] [${info.level}] ${info.label.toUpperCase()}:`;
       if (info.splat) {
         message = `${prefix} ${info.message} ${info.splat}`;

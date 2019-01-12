@@ -2,6 +2,7 @@ import express from "express";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import path from "path";
 
 // Import delle configurazioni e file utili
 import { config } from "../config/conf";
@@ -10,12 +11,20 @@ const logger = getLogger("EXPRESS-APP");
 
 // Configurazioni iniziali di porta, DEBUG e /api route
 import api from "./routes/api.route";
+import { CustomRequest, CustomResponse, CNextFunction } from "./utils/utils";
 
 // Inizializzazione del app express, server http e server socketio
 export const app = express();
 
 // Setup del sistema di logging del api rest
 app.set("env", config.node_env);
+app.use((req: CustomRequest, res: CustomResponse, next: CNextFunction) => {
+  // Set logger in modo che sia utilizzabile da tutti i handler e middleware
+  req.log = logger;
+  res.log = logger;
+  next();
+});
+
 app.use(
   morgan(":user-agent :remote-addr :method :url :status :response-time ms", {
     stream: {
@@ -30,8 +39,7 @@ app.use(
 app.use(
   cors({
     origin: "*",
-    credentials: true,
-    //method: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: false,
     preflightContinue: false,
     optionsSuccessStatus: 204
   })
@@ -44,7 +52,9 @@ app.use(cookieParser());
 // Bind della route /api
 app.use("/api", api);
 
-app.use(async (req, res, next) => {
+app.use(express.static(path.join(__dirname, "/public")));
+
+app.use((req: CustomRequest, res: CustomResponse, next: CNextFunction) => {
   let err = new Error("Not Found");
   // @ts-ignore
   err.status = 404;
@@ -52,19 +62,31 @@ app.use(async (req, res, next) => {
 });
 
 // Error handler
-app.use(async (err: Error, req: any, res: any, next: Function) => {
-  //@ts-ignore
-  const status = err.status || 500;
-  if (req.app.get("env") === "development") {
-    logger.error(err);
-    res.status(status).json({
-      status,
-      result: err.message,
-      "stack-trace": err.stack
-    });
-  } else {
-    res.status().json({
-      status
-    });
+app.use(
+  (
+    err: Error,
+    req: CustomRequest,
+    res: CustomResponse,
+    next: CNextFunction
+  ) => {
+    req.log.error(`${err}`);
+    //@ts-ignore
+    const status = err.status || 500;
+    if (req.app.get("env") === "development") {
+      res.status(status).json(
+        add_error_to_object(
+          {
+            "stack-trace": err.stack
+          },
+          err
+        )
+      );
+    } else {
+      res.status(status).json(add_error_to_object({}, err));
+    }
   }
-});
+);
+
+function add_error_to_object(obj: any = {}, err?: Error) {
+  return Object.assign(obj, { error: err ? err.message : null });
+}

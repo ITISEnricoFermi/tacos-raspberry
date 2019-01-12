@@ -67,11 +67,14 @@ export namespace socketspace {
     udpsocket.send(message, DestPORT, bcAddress, err => {
       if (err) return logger.warn(err);
       const jsonMessage = message.toJSON();
+
+      const jsonDataString: string = jsonMessage.data.toString();
+
       logger.silly(
         `Sending to ${mac} [${DestPORT}] {${jsonMessage.type}} => ${
-          jsonMessage.data.toString().length > 20
-            ? jsonMessage.data.toString().substring(0, 20)
-            : jsonMessage.data.toString()
+          jsonDataString.length > 20
+            ? jsonDataString.substring(0, 20)
+            : jsonDataString
         }`
       );
     });

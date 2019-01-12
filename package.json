@@ -11,6 +11,7 @@
     "moment": "^2.23.0",
     "morgan": "~1.8.1",
     "socket.io": "^2.2.0",
+    "v8-compile-cache": "^2.0.2",
     "winston": "^3.1.0"
   },
   "devDependencies": {
@@ -29,7 +30,7 @@
     "build": "tsc",
     "build-watch": "tsc -w",
     "install": "npm run build",
-    "start": "cross-env NODE_ENV=XD node dist/bin/index.js",
+    "start": "cross-env NODE_ENV=production node dist/bin/index.js",
     "dev": "node dist/bin/index.js",
     "dev-watch": "node_modules/.bin/nodemon dist/bin/index.js"
   },

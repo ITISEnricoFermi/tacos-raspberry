@@ -23,6 +23,8 @@ const changeDeviceState = async (id: number, state: number): Promise<void> => {
 
   // TODO: change device state
   await do_the_thing(device.devid, state);
+
+  return device;
 };
 
 /**

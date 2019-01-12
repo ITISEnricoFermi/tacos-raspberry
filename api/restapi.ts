@@ -73,15 +73,27 @@ app.use(
     //@ts-ignore
     const status = err.status || 500;
     if (req.app.get("env") === "development") {
-      res.status(status).json({
-        status,
-        result: err.message,
-        "stack-trace": err.stack
-      });
+      res.status(status).json(
+        add_error_to_object(
+          {
+            "stack-trace": err.stack
+          },
+          err
+        )
+      );
     } else {
-      res.status(status).json({
-        status
-      });
+      res.status(status).json(
+        add_error_to_object(
+          {
+            status
+          },
+          err
+        )
+      );
     }
   }
 );
+
+function add_error_to_object(obj: any = {}, err?: Error) {
+  return Object.assign(obj, { error: err ? err.message : null });
+}

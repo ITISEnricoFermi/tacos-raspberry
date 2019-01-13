@@ -7,14 +7,16 @@ Codice del server centrale di controllo.
 Per prima cosa clona questa repo
 
 ```shell
-$ git clone https://github.com/ITISEnricoFermi/silver-computing-raspberry.git
-$ cd silver-computing-raspberry
+$ git clone https://github.com/ITISEnricoFermi/tacos-raspberry.git
+$ cd tacos-raspberry
 ```
 
-Installa tutte le dipendenze e avvia il server
+Avvia lo script di building.
+> Su Linux ```build.sh```,
+> Su Windows ```build.bat```
 
 ```shell
-$ npm install
+$ ./build.sh
 $ npm run start
 ```
 
@@ -30,6 +32,8 @@ Tutte le routes del api le trovi [qui](https://documenter.getpostman.com/view/61
 [Documentazione](https://documenter.getpostman.com/view/6166056/RzfmGTR8)
 
 ## Per gli sviluppatori
+
+Per prima cosa avvia lo script di building.
 
 Ci sono una serie di script npm per rendere lo sviluppo più produttivo.
 ```
@@ -50,8 +54,6 @@ la differenza e la stessa degli script di building
 
 - **Ernesto Montada** - [n4y0n](https://github.com/n4y0n)
 - **Davide Gabrielli** - [davegabe](https://github.com/davegabe)
-- **[]** - []()
-- **[]** - []()
 
 ## License
 

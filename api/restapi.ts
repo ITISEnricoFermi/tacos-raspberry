@@ -15,6 +15,7 @@ import { CustomRequest, CustomResponse, CNextFunction } from "./utils/utils";
 
 // Inizializzazione del app express, server http e server socketio
 export const app = express();
+app.disable("x-powered-by");
 
 // Setup del sistema di logging del api rest
 app.set("env", config.node_env);

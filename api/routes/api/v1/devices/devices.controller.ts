@@ -48,6 +48,9 @@ export async function getDevice(req: CustomRequest, res: CustomResponse) {
  */
 export async function changeState(req: CustomRequest, res: CustomResponse) {
   try {
+    res.log.info(
+      `Richiesto cambio di stato: ${req.params.id} to ${req.params.state}`
+    );
     res.json(
       add_error_to_object(
         await changeDeviceState(
@@ -64,6 +67,9 @@ export async function changeState(req: CustomRequest, res: CustomResponse) {
 
 export async function getState(req: CustomRequest, res: CustomResponse) {
   try {
+    req.log.info(
+      `Richiesto stato della connessione del device: ${req.params.id}`
+    );
     res.json(
       add_error_to_object(await getDeviceState(parseInt(res.params.id)))
     );

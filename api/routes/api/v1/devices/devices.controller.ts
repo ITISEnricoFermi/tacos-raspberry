@@ -3,7 +3,8 @@ import _ from "lodash";
 import {
   findDeviceById,
   changeDeviceState,
-  getAllActiveDevices
+  getAllActiveDevices,
+  getDeviceState
 } from "./devices.service";
 import { CustomRequest, CustomResponse } from "../../../../utils/utils";
 
@@ -57,6 +58,16 @@ export async function changeState(req: CustomRequest, res: CustomResponse) {
     );
   } catch (e) {
     if (!e.code) e.code = 404;
+    handleInternalError(res, e);
+  }
+}
+
+export async function getState(req: CustomRequest, res: CustomResponse) {
+  try {
+    res.json(
+      add_error_to_object(await getDeviceState(parseInt(res.params.id)))
+    );
+  } catch (e) {
     handleInternalError(res, e);
   }
 }

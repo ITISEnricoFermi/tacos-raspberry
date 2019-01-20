@@ -46,7 +46,7 @@ const getAllActiveDevices = async () =>
  * @returns {DeviceState}
  */
 const getDeviceState = async (devid: number) => {
-  let dev = await findDeviceById(devid);
+  let dev = await DeviceCounter.findById(devid);
   return dev.state;
 };
 

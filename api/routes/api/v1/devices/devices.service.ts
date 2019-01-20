@@ -1,5 +1,5 @@
 import { DeviceType } from "../../../../../Iot-controller/interfaces/DeviceType";
-import { DeviceCounter } from "../../../../../udp/manager/devicecounter";
+import { DeviceManager } from "../../../../../udp/manager/devices";
 import { toClientDev } from "../../../../utils/utils";
 import { PushEvent } from "../../../../../config/bus";
 import {
@@ -9,12 +9,12 @@ import {
 import DeviceState from "../../../../../Iot-controller/interfaces/DeviceState";
 
 /**
- * Funzione wrapper attorno alla funzione findById nel namespace DeviceCounter
- * @see {@link DeviceCounter}
+ * Funzione wrapper attorno alla funzione findById nel namespace DeviceManager
+ * @see {@link DeviceManager}
  * @param devid Id del dispositivo da trovare
  */
 const findDeviceById: (devid: number) => any = async (devid: number) => {
-  return toClientDev(await DeviceCounter.findById(devid));
+  return toClientDev(await DeviceManager.findById(devid));
 };
 
 /**
@@ -34,11 +34,11 @@ const changeDeviceState = async (
 };
 
 /**
- * Funzione wrapper attorno alla funzione getAll nel namespace DeviceCounter
+ * Funzione wrapper attorno alla funzione getAll nel namespace DeviceManager
  * @returns {Promise<IDevice[]>}
  */
 const getAllActiveDevices = async () =>
-  (await DeviceCounter.getAll()).map(toClientDev);
+  (await DeviceManager.getAll()).map(toClientDev);
 
 /**
  * Cerca un dispositivo e ne restituisce lo stato in quel momento
@@ -46,7 +46,7 @@ const getAllActiveDevices = async () =>
  * @returns {DeviceState}
  */
 const getDeviceState = async (devid: number) => {
-  let dev = await DeviceCounter.findById(devid);
+  let dev = await DeviceManager.findById(devid);
   return dev.state;
 };
 

@@ -5,7 +5,7 @@ export function createIDevice(device): IDevice {
   let newDevice: IDevice = {
     devid: device.devid,
     mac: device.mac,
-    state: device.state,
+    state: DeviceState.Ok,
     type: device.type
   };
   return newDevice;

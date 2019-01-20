@@ -1,6 +1,6 @@
 import socketIO from "socket.io";
 import { SubscriveToEvent } from "../config/bus";
-import DeviceCounter from "../udp/manager/devicecounter";
+import DeviceManager from "../udp/manager/devices";
 import { IDevice } from "../Iot-controller/interfaces/IDevice";
 
 import { server } from "./httpserver";
@@ -26,7 +26,7 @@ SubscriveToEvent("device-new", async (dev: IDevice) => {
 
 io.on("connection", async socket => {
   // Invia tutti i dispositivi attualmente connessi al nuovo client connesso
-  socket.emit("READY", (await DeviceCounter.getAll()).map(toClientDev));
+  socket.emit("READY", (await DeviceManager.getAll()).map(toClientDev));
 
   socket.on("--", (dev: IDevice) => {
     logger.debug(`Ricevuto device ${JSON.stringify(dev)}`);

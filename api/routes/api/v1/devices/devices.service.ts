@@ -10,10 +10,10 @@ import DeviceState from "../../../../../Iot-controller/interfaces/DeviceState";
 /**
  * Funzione wrapper attorno alla funzione findById nel namespace DeviceManager
  * @see {@link DeviceManager}
- * @param devid Id del dispositivo da trovare
+ * @param id Id del dispositivo da trovare
  */
-const findDeviceById: (devid: number) => any = (devid: number) => {
-  return DeviceManager.findById(devid);
+const findDeviceById: (id: number) => any = (id: number) => {
+  return DeviceManager.findById(id);
 };
 
 /**
@@ -40,11 +40,11 @@ const getAllActiveDevices = async () => await DeviceManager.getAll();
 
 /**
  * Cerca un dispositivo e ne restituisce lo stato in quel momento
- * @param devid Id del dispositivo da trovare
+ * @param id Id del dispositivo da trovare
  * @returns {DeviceState}
  */
-const getDeviceState = async (devid: number) => {
-  let dev = await DeviceManager.findById(devid);
+const getDeviceState = async (id: number) => {
+  let dev = await DeviceManager.findById(id);
   return dev.state;
 };
 

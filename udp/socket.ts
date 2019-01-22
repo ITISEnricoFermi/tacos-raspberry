@@ -9,7 +9,7 @@ const logger = getLogger("UDPSOCKET");
 export namespace socketspace {
   const RecPORT: number = config.udp_rec_port;
   const DestPORT: number = config.udp_dest_port;
-  let bcAddress: string;
+  let bcAddress: string = "192.168.10.255";
 
   export const udpsocket: Socket = createSocket("udp4");
 

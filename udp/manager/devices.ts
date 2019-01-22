@@ -26,11 +26,11 @@ export namespace DeviceManager {
    * @returns {void}
    */
   export function create(device: IDevice): void {
-    device.devid = Date.now();
+    device.id = Date.now();
     devices.push(device);
     const index = devices.findIndex(dev => dev.mac === device.mac);
     devicesTimeout.push(setTimeout(remove, TIMEOUT, index));
-    logger.info("- New Device: " + JSON.stringify(device.devid));
+    logger.info("- New Device: " + JSON.stringify(device.id));
   }
 
   /**
@@ -60,7 +60,7 @@ export namespace DeviceManager {
     devices[index].state = DeviceState.Disconnected;
     let device = devices[index];
     PushEvent("device-state-changed", device);
-    logger.info(`- Removed Device: (${device.devid})[${device.mac}]`);
+    logger.info(`- Removed Device: (${device.id})[${device.mac}]`);
   }
 
   /**
@@ -76,8 +76,8 @@ export namespace DeviceManager {
    * @param id id di un dispositivo
    * @returns {IDevice} un dispositivo o un errore nel caso il dispositivo non venga trovato
    */
-  export function findById(devid: number): IDevice {
-    const device = devices.find(dev => dev.devid === devid);
+  export function findById(id: number): IDevice {
+    const device = devices.find(dev => dev.id === id);
 
     if (device) return device;
 

@@ -6,7 +6,7 @@ import { IDevice } from "../Iot-controller/interfaces/IDevice";
 import { server } from "./httpserver";
 import { config } from "../config/conf";
 import { getLogger } from "../config/log";
-import { normalizePort, toClientDev } from "./utils/utils";
+import { normalizePort } from "./utils/utils";
 const logger = getLogger("SOCKET.IO");
 
 const port = normalizePort(config.server_port);
@@ -17,16 +17,16 @@ export default io;
 
 // Socket io stuff
 SubscriveToEvent("device-state-changed", (dev: IDevice) => {
-  io.sockets.emit("device-state-changed", toClientDev(dev));
+  io.sockets.emit("device-state-changed", dev);
 });
 
 SubscriveToEvent("device-new", async (dev: IDevice) => {
-  io.sockets.emit("device-new", toClientDev(dev));
+  io.sockets.emit("device-new", dev);
 });
 
 io.on("connection", async socket => {
   // Invia tutti i dispositivi attualmente connessi al nuovo client connesso
-  socket.emit("READY", (await DeviceManager.getAll()).map(toClientDev));
+  socket.emit("READY", await DeviceManager.getAll());
 
   socket.on("--", (dev: IDevice) => {
     logger.debug(`Ricevuto device ${JSON.stringify(dev)}`);

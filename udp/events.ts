@@ -10,7 +10,9 @@ export namespace UdpEvents {
    * Iscrizione al evento change-state e manda al dispositivo il nuovo stato
    */
   SubscriveToEvent("change-state", (device: IDevice, state: string) => {
-    sendData(device.type, device.mac, state);
+    if (!device.mac) device = DeviceManager.findById(device.devid);
+    if (!device) return;
+    sendData(device.type.code, device.mac, state);
   });
 
   /**

@@ -1,6 +1,5 @@
 import { DeviceType } from "../../../../../Iot-controller/interfaces/DeviceType";
 import { DeviceManager } from "../../../../../udp/manager/devices";
-import { toClientDev } from "../../../../utils/utils";
 import { PushEvent } from "../../../../../config/bus";
 import {
   IDevice,
@@ -13,8 +12,8 @@ import DeviceState from "../../../../../Iot-controller/interfaces/DeviceState";
  * @see {@link DeviceManager}
  * @param devid Id del dispositivo da trovare
  */
-const findDeviceById: (devid: number) => any = async (devid: number) => {
-  return toClientDev(await DeviceManager.findById(devid));
+const findDeviceById: (devid: number) => any = (devid: number) => {
+  return DeviceManager.findById(devid);
 };
 
 /**
@@ -25,7 +24,7 @@ const findDeviceById: (devid: number) => any = async (devid: number) => {
  */
 const changeDeviceState = async (
   id: number,
-  state: number
+  state: string
 ): Promise<IDevice> => {
   let device = createIDevice(await findDeviceById(id));
   PushEvent("change-state", device, state);
@@ -37,8 +36,7 @@ const changeDeviceState = async (
  * Funzione wrapper attorno alla funzione getAll nel namespace DeviceManager
  * @returns {Promise<IDevice[]>}
  */
-const getAllActiveDevices = async () =>
-  (await DeviceManager.getAll()).map(toClientDev);
+const getAllActiveDevices = async () => await DeviceManager.getAll();
 
 /**
  * Cerca un dispositivo e ne restituisce lo stato in quel momento

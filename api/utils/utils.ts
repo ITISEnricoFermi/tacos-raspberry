@@ -1,6 +1,3 @@
-import IDevice from "../../Iot-controller/interfaces/IDevice";
-import DeviceType from "../../Iot-controller/interfaces/DeviceType";
-import DeviceState from "../../Iot-controller/interfaces/DeviceState";
 import winston = require("winston");
 import { NextFunction, Request, Response, RequestHandler } from "express";
 
@@ -21,14 +18,6 @@ export function normalizePort(val: string) {
 
   return false;
 }
-
-export const toClientDev: (
-  dev: IDevice
-) => { devid: number; type: DeviceType; state: DeviceState } = (
-  dev: IDevice
-) => {
-  return { devid: dev.devid, type: dev.type, state: dev.state };
-};
 
 export interface CustomRequest extends Request {
   log: winston.Logger;

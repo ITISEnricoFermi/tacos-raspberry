@@ -3,10 +3,13 @@ import { DeviceType } from "./DeviceType";
 
 export function createIDevice(device): IDevice {
   let newDevice: IDevice = {
-    devid: device.devid,
+    id: device.id,
     mac: device.mac,
-    state: DeviceState.Ok,
-    type: device.type
+    state: DeviceState.Unknown,
+    type: {
+      name: DeviceType[device.type ? device.type : DeviceType.Lampadina],
+      code: device.type ? device.type : DeviceType.Lampadina
+    }
   };
   return newDevice;
 }
@@ -16,10 +19,13 @@ export function createIDevice(device): IDevice {
  * a seconda del type verranno aggiunte altre informazzioni al oggetto device
  */
 export interface IDevice {
-  devid: number;
+  id: number;
   mac: string;
   state: DeviceState;
-  type: DeviceType;
+  type: {
+    name: string;
+    code: DeviceType;
+  };
   [key: string]: any;
 }
 

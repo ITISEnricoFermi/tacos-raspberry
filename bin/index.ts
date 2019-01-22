@@ -4,10 +4,10 @@
 // Compila gli import e mette in cache per import più performanti
 import "v8-compile-cache";
 
+import { createInterface } from "readline";
+
 import { getLogger } from "../config/log";
 const logger = getLogger("MAIN");
-
-logger.verbose("Setup event bus e gestione dei dispositivi");
 
 logger.verbose("Setup udp socket");
 import { sendData } from "../udp/socket";
@@ -17,10 +17,15 @@ export { UdpEvents };
 
 logger.verbose("Setup API e Socket.io");
 import { server } from "../api/server";
+import DeviceType from "../Iot-controller/interfaces/DeviceType";
 export { server };
 
-logger.verbose("testing some things");
-
-// Test send data sulla raspberry pi
-sendData(1, "AA:BB:CC:00:22:33", "true");
-setInterval(() => sendData(1, "AA:BB:CC:00:22:33", "true"), 10000);
+const iface = createInterface(process.stdin, process.stdout);
+iface.on("line", line => {
+  logger.debug(line);
+  sendData(
+    DeviceType.Lampadina,
+    "AA:BB:CC:DD:EE:FF",
+    `${line === "off" ? "true" : line === "on" ? "false" : ""}`
+  );
+});

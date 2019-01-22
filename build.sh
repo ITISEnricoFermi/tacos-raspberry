@@ -3,7 +3,7 @@ echo This operation should be done only the first time you clone this repo or if
 echo Setting up client submodule...
 
 echo  Init submodule
-git submodule init
+git submodule update --init --recursive --remote
 
 echo  Done
 echo  Clone submodule

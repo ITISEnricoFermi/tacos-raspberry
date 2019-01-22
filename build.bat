@@ -5,12 +5,7 @@ echo This operation should be done only the first time you clone this repo or if
 echo Setting up client submodule...
 
 echo  Init submodule
-call git submodule init
-
-echo  Done
-echo  Clone submodule
-
-call git submodule update
+call git submodule update --init --recursive --remote
 
 echo  Done
 

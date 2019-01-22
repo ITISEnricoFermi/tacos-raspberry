@@ -48,7 +48,7 @@ export namespace DeviceManager {
 
     clearTimeout(devicesTimeout[index]);
     devicesTimeout[index] = setTimeout(remove, TIMEOUT, index);
-    logger.silly(`- Device alive: [${device.mac}]`);
+    logger.debug(`- Device alive: [${device.mac}]`);
   }
 
   /**
@@ -65,16 +65,16 @@ export namespace DeviceManager {
 
   /**
    * Richiede la lista dei dispositivi attualmente attivi
-   * @returns {Promise<IDevice>} tutti i dispositivi
+   * @returns {IDevice[]} tutti i dispositivi
    */
-  export async function getAll(): Promise<IDevice[]> {
+  export function getAll(): IDevice[] {
     return devices;
   }
 
   /**
    * Cerca un dispositivo nella lista dispositivi
    * @param id id di un dispositivo
-   * @returns {Promise<IDevice>} un dispositivo o un errore nel caso il dispositivo non venga trovato
+   * @returns {IDevice} un dispositivo o un errore nel caso il dispositivo non venga trovato
    */
   export function findById(devid: number): IDevice {
     const device = devices.find(dev => dev.devid === devid);
@@ -87,7 +87,7 @@ export namespace DeviceManager {
   /**
    * Cerca un dispositivo nella lista dispositivi
    * @param mac mac di un dispositivo
-   * @returns {Promise<IDevice>} un dispositivo o un errore nel caso il dispositivo non venga trovato
+   * @returns {IDevice} un dispositivo o un errore nel caso il dispositivo non venga trovato
    */
   export function findByMac(mac: string): IDevice {
     const device = devices.find(dev => dev.mac === mac);

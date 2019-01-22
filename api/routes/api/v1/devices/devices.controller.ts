@@ -53,10 +53,7 @@ export async function changeState(req: CustomRequest, res: CustomResponse) {
     );
     res.json(
       add_error_to_object(
-        await changeDeviceState(
-          parseInt(req.params.id, 10),
-          parseInt(req.params.state, 10)
-        )
+        await changeDeviceState(parseInt(req.params.id, 10), req.params.state)
       )
     );
   } catch (e) {
@@ -84,7 +81,7 @@ export async function getState(req: CustomRequest, res: CustomResponse) {
  * @param e Oggetto con le informazioni relative al errore
  */
 function handleInternalError(res: CustomResponse, e: any) {
-  res.log.error(`Errore ${e}`);
+  res.log.error(`Errore ${e}: ${e.stack}`);
 
   if (res.app.get("env") === "development") {
     res.status(e.code).json(add_error_to_object({ "stack-trace": e.stack }, e));

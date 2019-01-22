@@ -3,6 +3,7 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import path from "path";
+import history from "connect-history-api-fallback";
 
 // Import delle configurazioni e file utili
 import { config } from "../config/conf";
@@ -49,6 +50,7 @@ app.options("*", cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(history());
 
 // Bind della route /api
 app.use("/api", api);

@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Handler } from "express";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -50,12 +50,29 @@ app.options("*", cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(history());
+
+const staticFileMiddleware: Handler = express.static(
+  path.join(__dirname, "/public")
+);
 
 // Bind della route /api
 app.use("/api", api);
 
-app.use(express.static(path.join(__dirname, "/public")));
+app.use(
+  history({
+    rewrites: [
+      {
+        from: /^((?!api|\.).)*$/gm,
+        to: "/index.html"
+      }
+    ],
+    logger: (what, method, path, message) => {
+      logger.info(`History ${method} ${path} : ${what} - ${message}`);
+    }
+  })
+);
+
+app.use(staticFileMiddleware);
 
 app.use((req: CustomRequest, res: CustomResponse, next: CNextFunction) => {
   let err = new Error("Not Found");

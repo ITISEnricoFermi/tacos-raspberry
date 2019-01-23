@@ -20,7 +20,7 @@ SubscriveToEvent("device-state-changed", (dev: IDevice) => {
   io.sockets.emit("device-state-changed", dev);
 });
 
-SubscriveToEvent("device-new", async (dev: IDevice) => {
+SubscriveToEvent("device-new", (dev: IDevice) => {
   io.sockets.emit("device-new", dev);
 });
 

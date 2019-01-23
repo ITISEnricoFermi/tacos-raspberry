@@ -12,11 +12,11 @@ export function normalizePort(val: string) {
     return val;
   }
 
-  if (port >= 0) {
+  if (port > 0) {
     return port;
   }
 
-  return false;
+  throw new Error("Invalid port: " + val);
 }
 
 export interface CustomRequest extends Request {
@@ -34,11 +34,9 @@ export interface CustomResponse extends Response {
 }
 
 export interface CRequestHandler extends RequestHandler {
-  // tslint:disable-next-line callable-types (This is extended from and can't extend from a type alias in ts<2.2
   (req: CustomRequest, res: CustomResponse, next: CNextFunction): any;
 }
 
 export interface CNextFunction extends NextFunction {
-  // tslint:disable-next-line callable-types (In ts2.1 it thinks the type alias has no call signatures)
   (err?: any): void;
 }

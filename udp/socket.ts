@@ -32,26 +32,17 @@ export namespace socketspace {
     try {
       let data = JSON.parse(m.toString());
       let device: IDevice = createIDevice(data);
-      switch (data.operation) {
-        case "NEW":
-          PushEvent("device-new", device);
-          break;
-        case "UPDATE":
-          PushEvent("device-update", device);
-          break;
-        case "ALIVE":
-          PushEvent("device-alive", device);
-          break;
-      }
+      PushEvent("device-message", device);
     } catch (e) {
       logger.warn("Error on message: " + e + "\n" + m);
     }
   });
 
-  export function sendData(type: string, mac: string, payload: string) {
-    let typeB: Buffer = Buffer.from(type);
+  export function sendData(type: DeviceType, mac: string, data: string) {
+    let typeB: Buffer = Buffer.alloc(1);
+    typeB.writeInt8(type, 0);
     let macB: Buffer = Buffer.from(mac.replace(/:/g, ""), "hex");
-    let payloadB: Buffer = Buffer.from(payload);
+    let payloadB: Buffer = Buffer.from(data);
     let lenB: Buffer = Buffer.alloc(1);
     lenB.writeInt8(payloadB.length, 0);
 
@@ -125,6 +116,7 @@ export namespace socketspace {
 
 import sendData = socketspace.sendData;
 import calculateBroadcast = socketspace.calculateBroadcast;
+import DeviceType from "../Iot-controller/interfaces/DeviceType";
 
 export { sendData, calculateBroadcast };
 

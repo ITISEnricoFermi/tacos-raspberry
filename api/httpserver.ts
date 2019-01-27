@@ -2,27 +2,27 @@ import http from "http";
 
 import { app } from "./restapi";
 import { getLogger } from "../config/log";
+import { config } from "../config/conf";
 const logger = getLogger("SERVER");
 
 export const server = http.createServer(app);
 
-server.on("error", async error => {
+server.on("error", error => {
   //@ts-ignore
   if (error.syscall !== "listen") {
     throw error;
   }
 
-  let addr = server.address();
-  let bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
-
   //@ts-ignore
   switch (error.code) {
     case "EACCES":
-      logger.error(bind + " requires elevated privileges");
+      logger.error(
+        "Port " + config.server_port + " requires elevated privileges"
+      );
       process.exit(1);
       break;
     case "EADDRINUSE":
-      logger.error(bind + " is already in use");
+      logger.error("Port " + config.server_port + " is already in use");
       process.exit(1);
       break;
     default:
@@ -30,8 +30,6 @@ server.on("error", async error => {
   }
 });
 
-server.on("listening", async () => {
-  let addr = server.address();
-  let bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
-  logger.verbose(`Listening on ${bind}`);
+server.on("listening", () => {
+  logger.verbose(`Listening on port ${config.server_port}`);
 });

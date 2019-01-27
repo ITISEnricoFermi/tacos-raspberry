@@ -1,9 +1,10 @@
 {
   "name": "silver-computing-raspberry",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Server side del progetto [INSERT NAME HERE]",
   "main": "main.js",
   "dependencies": {
+    "connect-history-api-fallback": "^1.6.0",
     "cookie-parser": "~1.4.3",
     "cors": "^2.8.5",
     "express": "^4.16.4",

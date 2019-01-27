@@ -3,7 +3,8 @@ import _ from "lodash";
 import {
   findDeviceById,
   changeDeviceState,
-  getAllActiveDevices
+  getAllActiveDevices,
+  getDeviceState
 } from "./devices.service";
 import { CustomRequest, CustomResponse } from "../../../../utils/utils";
 
@@ -47,16 +48,29 @@ export async function getDevice(req: CustomRequest, res: CustomResponse) {
  */
 export async function changeState(req: CustomRequest, res: CustomResponse) {
   try {
+    res.log.info(
+      `Richiesto cambio di stato: ${req.params.id} to ${req.params.state}`
+    );
     res.json(
       add_error_to_object(
-        await changeDeviceState(
-          parseInt(req.params.id, 10),
-          parseInt(req.params.state, 10)
-        )
+        await changeDeviceState(parseInt(req.params.id, 10), req.params.state)
       )
     );
   } catch (e) {
     if (!e.code) e.code = 404;
+    handleInternalError(res, e);
+  }
+}
+
+export async function getState(req: CustomRequest, res: CustomResponse) {
+  try {
+    req.log.info(
+      `Richiesto stato della connessione del device: ${req.params.id}`
+    );
+    res.json(
+      add_error_to_object(await getDeviceState(parseInt(res.params.id)))
+    );
+  } catch (e) {
     handleInternalError(res, e);
   }
 }
@@ -67,7 +81,7 @@ export async function changeState(req: CustomRequest, res: CustomResponse) {
  * @param e Oggetto con le informazioni relative al errore
  */
 function handleInternalError(res: CustomResponse, e: any) {
-  res.log.error(`Errore ${e}`);
+  res.log.error(`Errore ${e}: ${e.stack}`);
 
   if (res.app.get("env") === "development") {
     res.status(e.code).json(add_error_to_object({ "stack-trace": e.stack }, e));

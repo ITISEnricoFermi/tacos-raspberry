@@ -1,6 +1,5 @@
 import { DeviceType } from "../../../../../Iot-controller/interfaces/DeviceType";
-import { DeviceCounter } from "../../../../../udp/manager/devicecounter";
-import { toClientDev } from "../../../../utils/utils";
+import { DeviceManager } from "../../../../../udp/manager/devices";
 import { PushEvent } from "../../../../../config/bus";
 import {
   IDevice,
@@ -9,12 +8,12 @@ import {
 import DeviceState from "../../../../../Iot-controller/interfaces/DeviceState";
 
 /**
- * Funzione wrapper attorno alla funzione findById nel namespace DeviceCounter
- * @see {@link DeviceCounter}
- * @param devid Id del dispositivo da trovare
+ * Funzione wrapper attorno alla funzione findById nel namespace DeviceManager
+ * @see {@link DeviceManager}
+ * @param id Id del dispositivo da trovare
  */
-const findDeviceById: (devid: number) => any = async (devid: number) => {
-  return toClientDev(await DeviceCounter.findById(devid));
+const findDeviceById: (id: number) => any = (id: number) => {
+  return DeviceManager.findById(id);
 };
 
 /**
@@ -25,7 +24,7 @@ const findDeviceById: (devid: number) => any = async (devid: number) => {
  */
 const changeDeviceState = async (
   id: number,
-  state: number
+  state: string
 ): Promise<IDevice> => {
   let device = createIDevice(await findDeviceById(id));
   PushEvent("change-state", device, state);
@@ -34,19 +33,18 @@ const changeDeviceState = async (
 };
 
 /**
- * Funzione wrapper attorno alla funzione getAll nel namespace DeviceCounter
+ * Funzione wrapper attorno alla funzione getAll nel namespace DeviceManager
  * @returns {Promise<IDevice[]>}
  */
-const getAllActiveDevices = async () =>
-  (await DeviceCounter.getAll()).map(toClientDev);
+const getAllActiveDevices = async () => await DeviceManager.getAll();
 
 /**
  * Cerca un dispositivo e ne restituisce lo stato in quel momento
- * @param devid Id del dispositivo da trovare
+ * @param id Id del dispositivo da trovare
  * @returns {DeviceState}
  */
-const getDeviceState = async (devid: number) => {
-  let dev = await findDeviceById(devid);
+const getDeviceState = async (id: number) => {
+  let dev = await DeviceManager.findById(id);
   return dev.state;
 };
 

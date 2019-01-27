@@ -1,6 +1,6 @@
 import { DeviceState } from "../interfaces/DeviceState";
 
-export function do_the_thing(devid: number, state: DeviceState) {
+export function do_the_thing(id: number, state: DeviceState) {
   const e = Error(
     "Cambio di stato tramite api non implementato correttamente!"
   );

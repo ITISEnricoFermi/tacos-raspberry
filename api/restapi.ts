@@ -1,8 +1,9 @@
-import express from "express";
+import express, { Handler } from "express";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import path from "path";
+import history from "connect-history-api-fallback";
 
 // Import delle configurazioni e file utili
 import { config } from "../config/conf";
@@ -15,6 +16,7 @@ import { CustomRequest, CustomResponse, CNextFunction } from "./utils/utils";
 
 // Inizializzazione del app express, server http e server socketio
 export const app = express();
+app.disable("x-powered-by");
 
 // Setup del sistema di logging del api rest
 app.set("env", config.node_env);
@@ -49,10 +51,28 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+const staticFileMiddleware: Handler = express.static(
+  path.join(__dirname, "/public")
+);
+
 // Bind della route /api
 app.use("/api", api);
 
-app.use(express.static(path.join(__dirname, "/public")));
+app.use(
+  history({
+    rewrites: [
+      {
+        from: /^((?!api|\.).)*$/gm,
+        to: "/index.html"
+      }
+    ],
+    logger: (what, method, path, message) => {
+      logger.info(`History ${method} ${path} : ${what} - ${message}`);
+    }
+  })
+);
+
+app.use(staticFileMiddleware);
 
 app.use((req: CustomRequest, res: CustomResponse, next: CNextFunction) => {
   let err = new Error("Not Found");

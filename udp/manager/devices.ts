@@ -43,8 +43,10 @@ export namespace DeviceManager {
     if (index === -1) throw Error("Device not found");
 
     //Se era disconnesso, settalo come attivo
-    if (devices[index].state == DeviceState.Disconnected)
+    if (devices[index].state == DeviceState.Disconnected) {
       devices[index].state = DeviceState.Ok;
+      PushEvent("device-state-changed", device);
+    }
 
     clearTimeout(devicesTimeout[index]);
     devicesTimeout[index] = setTimeout(remove, TIMEOUT, index);

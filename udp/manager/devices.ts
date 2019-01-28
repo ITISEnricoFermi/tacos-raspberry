@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { config } from "../../config/conf";
-import { IDevice } from "../../Iot-controller/interfaces/IDevice";
+import Device, { IDevice } from "../../Iot-controller/interfaces/Device";
 import { PushEvent } from "../../config/bus";
 import DeviceState from "../../Iot-controller/interfaces/DeviceState";
 import { getLogger } from "../../config/log";
@@ -14,7 +14,7 @@ export namespace DeviceManager {
   /**
    * Lista di dispositivi attivi
    */
-  const devices: IDevice[] = [];
+  const devices: Device[] = [];
   /**
    * Lista dei timeout per ogni dispositivo
    */
@@ -25,8 +25,7 @@ export namespace DeviceManager {
    * @throws {Error} - Device already exists
    * @returns {void}
    */
-  export function create(device: IDevice): void {
-    device.id = Date.now();
+  export function create(device: Device): void {
     devices.push(device);
     const index = devices.findIndex(dev => dev.mac === device.mac);
     devicesTimeout.push(setTimeout(remove, TIMEOUT, index));
@@ -38,13 +37,13 @@ export namespace DeviceManager {
    * @throws {Error} - Device not found
    * @returns {void}
    */
-  export function alive(device: IDevice): void {
+  export function alive(device: Device): void {
     const index = devices.findIndex(dev => dev.mac === device.mac);
     if (index === -1) throw Error("Device not found");
 
     //Se era disconnesso, settalo come attivo
-    if (devices[index].state == DeviceState.Disconnected) {
-      devices[index].state = DeviceState.Ok;
+    if (devices[index]._state === DeviceState.Disconnected) {
+      devices[index]._state = DeviceState.Ok;
       PushEvent("device-state-changed", device);
     }
 
@@ -59,7 +58,7 @@ export namespace DeviceManager {
    * @returns {void}
    */
   export function remove(index: number): void {
-    devices[index].state = DeviceState.Disconnected;
+    devices[index]._state = DeviceState.Disconnected;
     let device = devices[index];
     PushEvent("device-state-changed", device);
     logger.info(`- Removed Device: (${device.id})[${device.mac}]`);
@@ -78,7 +77,7 @@ export namespace DeviceManager {
    * @param id id di un dispositivo
    * @returns {IDevice} un dispositivo o un errore nel caso il dispositivo non venga trovato
    */
-  export function findById(id: number): IDevice {
+  export function findById(id: number): Device {
     const device = devices.find(dev => dev.id === id);
 
     if (device) return device;
@@ -91,7 +90,7 @@ export namespace DeviceManager {
    * @param mac mac di un dispositivo
    * @returns {IDevice} un dispositivo o un errore nel caso il dispositivo non venga trovato
    */
-  export function findByMac(mac: string): IDevice {
+  export function findByMac(mac: string): Device {
     const device = devices.find(dev => dev.mac === mac);
 
     if (device) return device;

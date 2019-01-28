@@ -4,9 +4,11 @@ import {
   findDeviceById,
   changeDeviceState,
   getAllActiveDevices,
-  getDeviceState
+  getDeviceState,
+  changeDeviceColor
 } from "./devices.service";
 import { CustomRequest, CustomResponse } from "../../../../utils/utils";
+import { DeviceState } from "../../../../../Iot-controller/interfaces/DeviceState";
 
 /**
  * Invia al client un oggetto json con un array di tutti i devices
@@ -49,11 +51,35 @@ export async function getDevice(req: CustomRequest, res: CustomResponse) {
 export async function changeState(req: CustomRequest, res: CustomResponse) {
   try {
     res.log.info(
-      `Richiesto cambio di stato: ${req.params.id} to ${req.params.state}`
+      `Richiesto cambio di stato: ${req.params.id} a ${
+        DeviceState[req.params.state]
+      }`
     );
     res.json(
       add_error_to_object(
         await changeDeviceState(parseInt(req.params.id, 10), req.params.state)
+      )
+    );
+  } catch (e) {
+    if (!e.code) e.code = 404;
+    handleInternalError(res, e);
+  }
+}
+
+/**
+ * Cambia lo stato di un dispositivo che trova tramite l'id passato nei params della richiesta.
+ * Lo stato viene anche esso passato nei params
+ * @param req Express request object
+ * @param res Express response object
+ */
+export async function changeStateRGB(req: CustomRequest, res: CustomResponse) {
+  try {
+    res.log.info(
+      `Richiesto cambio di colore rgb di: ${req.params.id} a ${req.params.hex}`
+    );
+    res.json(
+      add_error_to_object(
+        await changeDeviceColor(parseInt(req.params.id, 10), req.params.hex)
       )
     );
   } catch (e) {

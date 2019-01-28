@@ -1,7 +1,7 @@
 import { createSocket, Socket } from "dgram";
 import { config } from "../config/conf";
 import { PushEvent } from "../config/bus";
-import { IDevice, createIDevice } from "../Iot-controller/interfaces/IDevice";
+import Device, { createDevice } from "../Iot-controller/interfaces/Device";
 import os, { NetworkInterfaceInfo } from "os";
 import { getLogger } from "../config/log";
 const logger = getLogger("UDPSOCKET");
@@ -9,7 +9,7 @@ const logger = getLogger("UDPSOCKET");
 export namespace socketspace {
   const RecPORT: number = config.udp_rec_port;
   const DestPORT: number = config.udp_dest_port;
-  let bcAddress: string;
+  let bcAddress: string = "192.168.10.255";
 
   export const udpsocket: Socket = createSocket("udp4");
 
@@ -31,7 +31,7 @@ export namespace socketspace {
   udpsocket.on("message", m => {
     try {
       let data = JSON.parse(m.toString());
-      let device: IDevice = createIDevice(data);
+      let device: Device = createDevice(data);
       PushEvent("device-message", device);
     } catch (e) {
       logger.warn("Error on message: " + e + "\n" + m);
@@ -64,8 +64,8 @@ export namespace socketspace {
       logger.silly(
         `Sending to ${mac} [${DestPORT}] {${jsonMessage.type}} => ${
           jsonDataString.length > 20
-            ? jsonDataString.substring(0, 20)
-            : jsonDataString
+            ? message.toString("hex").substring(0, 20)
+            : message.toString("hex")
         }`
       );
     });

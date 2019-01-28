@@ -1,5 +1,5 @@
 import { SubscriveToEvent, PushEvent } from "../config/bus";
-import { IDevice } from "../Iot-controller/interfaces/IDevice";
+import Device, { IDevice } from "../Iot-controller/interfaces/Device";
 import { sendData } from "./socket";
 import DeviceManager from "./manager/devices";
 import { getLogger } from "../config/log";
@@ -12,7 +12,7 @@ export namespace UdpEvents {
   SubscriveToEvent("change-state", (device: IDevice, state: string) => {
     if (!device.mac) device = DeviceManager.findById(device.id);
     if (!device) return;
-    sendData(device.type.code, device.mac, state);
+    sendData(device._type.code, device.mac, state);
   });
 
   /**
@@ -30,14 +30,14 @@ export namespace UdpEvents {
   /**
    * Iscrizione al evento device-new e crea un nuovo dispositivo nella lista
    */
-  SubscriveToEvent("device-new", (device: IDevice) => {
+  SubscriveToEvent("device-new", (device: Device) => {
     DeviceManager.create(device);
   });
 
   /**
    * Iscrizione al evento device-alive e azzera il timer di distruzione del dispositivo corrispondente nella lista dei dispositivi
    */
-  SubscriveToEvent("device-alive", (device: IDevice) => {
+  SubscriveToEvent("device-alive", (device: Device) => {
     try {
       DeviceManager.alive(device);
     } catch (e) {

@@ -22,18 +22,18 @@ export { server };
 
 const iface = createInterface(process.stdin, process.stdout);
 iface.on("line", line => {
+  logger.debug(line);
   if (line === "exit") process.exit(0);
   if (line.search(/rgb/)) {
     let lineArr: string[] = line.split(" ");
     let rgb: string = lineArr[1] || "ffffff";
-    let r = rgb.substring(0, 2);
-    let g = rgb.substring(2, 4);
-    let b = rgb.substring(4, 6);
+    sendData(DeviceType.LedRGB, "AA:BB:CC:DD:EE:FF", rgb);
   }
-  logger.debug(line);
-  sendData(
-    DeviceType.Lampadina,
-    "AA:BB:CC:DD:EE:FF",
-    `${line === "off" ? "false" : line === "on" ? "true" : ""}`
-  );
+  if (line.search(/l/)) {
+    sendData(
+      DeviceType.Lampadina,
+      "AA:BB:CC:DD:EE:FF",
+      `${line === "off" ? "false" : line === "on" ? "true" : ""}`
+    );
+  }
 });

@@ -38,7 +38,7 @@ export const load = () => {
 
 export const reload = (cmd: string) => {
   try {
-    require(commands_folder + cmd);
+    require(commands_folder + sep + cmd);
     delete require.cache[require.resolve(commands_folder + sep + cmd)];
     let good = require(commands_folder + sep + cmd);
     cmds[cmd] = { run: good.run };

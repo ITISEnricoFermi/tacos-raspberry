@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { config } from "../../config/conf";
-import Device, { IDevice } from "../../Iot-controller/interfaces/Device";
+import Device from "../../Iot-controller/interfaces/Device";
 import { PushEvent } from "../../config/bus";
 import DeviceState from "../../Iot-controller/interfaces/DeviceState";
 import { getLogger } from "../../config/log";
@@ -68,7 +68,7 @@ export namespace DeviceManager {
    * Richiede la lista dei dispositivi attualmente attivi
    * @returns {IDevice[]} tutti i dispositivi
    */
-  export function getAll(): IDevice[] {
+  export function getAll(): Device[] {
     return devices;
   }
 

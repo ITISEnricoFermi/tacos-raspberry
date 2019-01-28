@@ -3,8 +3,8 @@
  */
 export enum DeviceType {
   None = 0,
-  Lampadina = 0x31,
-  LedRGB = 0x51
+  Lampadina,
+  LedRGB
 }
 
 export default DeviceType;

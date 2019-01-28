@@ -2,11 +2,20 @@ import { createSocket, Socket } from "dgram";
 import { config } from "../config/conf";
 import { PushEvent } from "../config/bus";
 import Device, { createDevice } from "../Iot-controller/interfaces/Device";
+import { load, getCmds, Commands } from "../Iot-controller/loadCommands";
+import { CommandEnum } from "../Iot-controller/interfaces/Commands";
 import os, { NetworkInterfaceInfo } from "os";
 import { getLogger } from "../config/log";
 const logger = getLogger("UDPSOCKET");
 
+export interface Payload {
+  rgb: number;
+  state: number; // 1 or 0
+  rgbmode: number;
+}
+
 export namespace socketspace {
+  load();
   const RecPORT: number = config.udp_rec_port;
   const DestPORT: number = config.udp_dest_port;
   let bcAddress: string = "192.168.10.255";
@@ -38,37 +47,9 @@ export namespace socketspace {
     }
   });
 
-  export function sendData(type: DeviceType, mac: string, data: string) {
-    let typeB: Buffer = Buffer.alloc(1);
-    typeB.writeInt8(type, 0);
-    let macB: Buffer = Buffer.from(mac.replace(/:/g, ""), "hex");
-    let payloadB: Buffer = Buffer.from(data);
-    let lenB: Buffer = Buffer.alloc(1);
-    lenB.writeInt8(payloadB.length, 0);
-
-    if (
-      typeB.length > 1 ||
-      macB.length > 6 ||
-      lenB.length > 1 ||
-      payloadB.length > 255
-    )
-      throw Error("Invalid length for arguments");
-
-    let message: Buffer = Buffer.concat([typeB, macB, lenB, payloadB]);
-    udpsocket.send(message, DestPORT, bcAddress, err => {
-      if (err) return logger.warn(err);
-      const jsonMessage = message.toJSON();
-
-      const jsonDataString: string = jsonMessage.data.toString();
-
-      logger.silly(
-        `Sending to ${mac} [${DestPORT}] {${jsonMessage.type}} => ${
-          jsonDataString.length > 20
-            ? message.toString("hex").substring(0, 20)
-            : message.toString("hex")
-        }`
-      );
-    });
+  export function sendData(cmd: CommandEnum, device: Device, ...args: any[]) {
+    const cmds: Commands = getCmds();
+    cmds[CommandEnum[cmd]].run(udpsocket, DestPORT, bcAddress, device, ...args);
   }
 
   export function calculateBroadcast() {
@@ -116,7 +97,6 @@ export namespace socketspace {
 
 import sendData = socketspace.sendData;
 import calculateBroadcast = socketspace.calculateBroadcast;
-import DeviceType from "../Iot-controller/interfaces/DeviceType";
 
 export { sendData, calculateBroadcast };
 

@@ -1,8 +1,9 @@
 import { readdir } from "fs";
 import { Socket } from "dgram";
 import { resolve, sep } from "path";
+import { getLogger } from "../config/log";
 import Device from "./interfaces/Device";
-
+const logger = getLogger("COMMAND-LOADER");
 export interface Command {
   run: (
     socket: Socket,
@@ -23,14 +24,14 @@ const commands_folder = resolve(__dirname, "commands");
 
 export const load = () => {
   readdir(commands_folder, (err, files) => {
-    if (err) return console.log(err);
+    if (err) return logger.error(err);
     files.forEach(f => {
       try {
         let cmd = require(commands_folder + sep + f);
         let name = f.slice(0, -3);
         cmds[name] = { run: cmd.run };
       } catch (err) {
-        console.log(err);
+        logger.error(err);
       }
     });
   });

@@ -18,8 +18,7 @@ export const run = (
   let typeB: Buffer = Buffer.alloc(1);
   typeB.writeInt8(CommandEnum.Lampadina, 0);
   let macB: Buffer = Buffer.from(device.mac.replace(/:/g, ""), "hex");
-  let payloadB: Buffer = Buffer.alloc(1);
-  payloadB.writeInt8(st === "false" ? 0 : 1, 0);
+  let payloadB: Buffer = Buffer.from(st);
   let lenB: Buffer = Buffer.alloc(1);
   lenB.writeInt8(payloadB.length, 0);
 
@@ -35,11 +34,9 @@ export const run = (
   socket.send(message, dest_port, bc_address, err => {
     if (err) return logger.warn(err);
     logger.silly(
-      `Sending to ${device.mac} [${dest_port}] {${message.toJSON().type}} => ${
-        message.length > 20
-          ? message.toString("hex").substring(0, 20)
-          : message.toString("hex")
-      }`
+      `Sending to ${device.mac} [${dest_port}] {${
+        message.toJSON().type
+      }} => ${message.toString("hex")}`
     );
   });
 };

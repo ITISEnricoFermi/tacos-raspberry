@@ -18,7 +18,7 @@ export namespace socketspace {
   load();
   const RecPORT: number = config.udp_rec_port;
   const DestPORT: number = config.udp_dest_port;
-  let bcAddress: string = "192.168.10.255";
+  let bcAddress: string | null = config.broadcast_address;
 
   export const udpsocket: Socket = createSocket("udp4");
 
@@ -49,6 +49,7 @@ export namespace socketspace {
 
   export function sendData(cmd: CommandEnum, device: Device, ...args: any[]) {
     const cmds: Commands = getCmds();
+    if (!bcAddress) throw new Error("Broadcast address undefined");
     cmds[CommandEnum[cmd]].run(udpsocket, DestPORT, bcAddress, device, ...args);
   }
 

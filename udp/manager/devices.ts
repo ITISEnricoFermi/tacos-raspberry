@@ -39,8 +39,9 @@ export namespace DeviceManager {
    */
   export function alive(device: Device): void {
     const index = devices.findIndex(dev => dev.mac === device.mac);
-    if (index === -1) throw Error("Device not found");
-
+    if (index === -1) {
+      throw new Error("Device not found");
+    }
     //Se era disconnesso, settalo come attivo
     if (devices[index]._state === DeviceState.Disconnected) {
       devices[index]._state = DeviceState.Ok;

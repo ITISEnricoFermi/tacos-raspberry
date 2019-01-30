@@ -59,7 +59,7 @@ export namespace UdpEvents {
     try {
       DeviceManager.alive(device);
     } catch (e) {
-      logger.warn(e);
+      logger.warn(`${e.message} ->->->\n ${e.stack}`);
     }
   });
 }

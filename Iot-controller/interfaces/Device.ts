@@ -3,7 +3,7 @@ import { DeviceType } from "./DeviceType";
 
 export function createDevice(device: any): Device {
   let newDevice: Device = new Device(
-    device.id || Date.now(),
+    device.id,
     device.mac,
     device.state,
     device.type
@@ -31,7 +31,7 @@ export interface IDevice {
 
 export class Device implements IDevice {
   constructor(
-    public id: number,
+    public id: number = Date.now(),
     public mac: string,
     state: DeviceState = DeviceState.Unknown,
     type: DeviceType = DeviceType.None

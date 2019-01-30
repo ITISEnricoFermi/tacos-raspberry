@@ -2,9 +2,12 @@ import { DeviceState } from "./DeviceState";
 import { DeviceType } from "./DeviceType";
 
 export function createDevice(device: any): Device {
-  let newDevice: Device = new Device(device.id || Date.now(), device.mac);
-  newDevice._state = device.state;
-  newDevice._type = device.type;
+  let newDevice: Device = new Device(
+    device.id || Date.now(),
+    device.mac,
+    device.state,
+    device.type
+  );
   return newDevice;
 }
 
@@ -30,11 +33,16 @@ export class Device implements IDevice {
   constructor(
     public id: number,
     public mac: string,
-    state?: DeviceState,
-    type?: DeviceType
+    state: DeviceState = DeviceState.Unknown,
+    type: DeviceType = DeviceType.None
   ) {
-    this._state = state || DeviceState.Unknown;
-    this._type = type || DeviceType.None;
+    //@ts-ignore
+    if (isNaN(state)) state = state.code;
+    //@ts-ignore
+    if (isNaN(type)) type = type.code;
+
+    this._state = state;
+    this._type = type;
   }
 
   set _state(s: DeviceState) {

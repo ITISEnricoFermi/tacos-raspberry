@@ -50,7 +50,19 @@ export namespace socketspace {
   export function sendData(cmd: CommandEnum, device: Device, ...args: any[]) {
     const cmds: Commands = getCmds();
     if (!bcAddress) throw new Error("Broadcast address undefined");
-    cmds[CommandEnum[cmd]].run(udpsocket, DestPORT, bcAddress, device, ...args);
+    try {
+      cmds[CommandEnum[cmd]].run(
+        udpsocket,
+        DestPORT,
+        bcAddress,
+        device,
+        ...args
+      );
+    } catch (err) {
+      logger.warn(
+        `Cannot execute command [${CommandEnum[cmd]}]: ${err.message}`
+      );
+    }
   }
 
   export function calculateBroadcast() {

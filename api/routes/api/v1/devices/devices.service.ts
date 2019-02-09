@@ -30,10 +30,10 @@ export const changeDeviceState = async (
 };
 
 /**
- * Cambia lo stato di un dispositivo
- * @throws {Error} se non riesce a cambiarne lo stato
+ * Cambia il colore di un dispositivo
+ * @throws {Error} se non riesce a cambiarne il colore
  * @param id Id del dispositivo da aggiornare
- * @param state nuovo stato del dispositivo
+ * @param color nuovo colore del dispositivo
  */
 export const changeDeviceColor = async (
   id: number,

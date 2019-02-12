@@ -7,5 +7,6 @@ export const config = {
   log_level: process.env.LOG_LEVEL || "silly",
   log_file: "./logs.log",
   log_err_file: "./err-logs.log",
-  log_file_max_size: 5000000 // massima grandezza file di log in bytes (5MB)
+  log_file_max_size: 5000000, // massima grandezza file di log in bytes (5MB)
+  broadcast_address: null // Lasciare null perche venga calcolato autonomamente
 };

@@ -1,7 +1,7 @@
 {
   "name": "silver-computing-raspberry",
-  "version": "0.0.1",
-  "description": "Server side del progetto [INSERT NAME HERE]",
+  "version": "0.1.0",
+  "description": "Server side del progetto TACOS",
   "main": "main.js",
   "dependencies": {
     "connect-history-api-fallback": "^1.6.0",

@@ -17,15 +17,17 @@ export { UdpEvents };
 
 logger.verbose("Setup API e Socket.io");
 import { server } from "../api/server";
-import DeviceType from "../Iot-controller/interfaces/DeviceType";
+import { CommandEnum } from "../Iot-controller/interfaces/Commands";
+import DeviceManager from "../udp/manager/devices";
 export { server };
 
 const iface = createInterface(process.stdin, process.stdout);
 iface.on("line", line => {
   logger.debug(line);
+  if (line === "exit") process.exit(0);
   sendData(
-    DeviceType.Lampadina,
-    "AA:BB:CC:DD:EE:FF",
-    `${line === "off" ? "true" : line === "on" ? "false" : ""}`
+    CommandEnum.Lampadina,
+    DeviceManager.getAll()[0],
+    line === "on" ? "true" : "false"
   );
 });

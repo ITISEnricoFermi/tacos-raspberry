@@ -3,8 +3,8 @@ import { DeviceManager } from "../../../../../udp/manager/devices";
 import { PushEvent } from "../../../../../config/bus";
 import {
   IDevice,
-  createIDevice
-} from "../../../../../Iot-controller/interfaces/IDevice";
+  createDevice
+} from "../../../../../Iot-controller/interfaces/Device";
 import DeviceState from "../../../../../Iot-controller/interfaces/DeviceState";
 
 /**
@@ -12,7 +12,7 @@ import DeviceState from "../../../../../Iot-controller/interfaces/DeviceState";
  * @see {@link DeviceManager}
  * @param id Id del dispositivo da trovare
  */
-const findDeviceById: (id: number) => any = (id: number) => {
+export const findDeviceById: (id: number) => any = (id: number) => {
   return DeviceManager.findById(id);
 };
 
@@ -22,36 +22,47 @@ const findDeviceById: (id: number) => any = (id: number) => {
  * @param id Id del dispositivo da aggiornare
  * @param state nuovo stato del dispositivo
  */
-const changeDeviceState = async (
+export const changeDeviceState = async (
   id: number,
   state: string
 ): Promise<IDevice> => {
-  let device = createIDevice(await findDeviceById(id));
-  PushEvent("change-state", device, state);
-  device.state = DeviceState.Busy;
-  return device;
+  return changeDevice("state", id, state);
+};
+
+/**
+ * Cambia il colore di un dispositivo
+ * @throws {Error} se non riesce a cambiarne il colore
+ * @param id Id del dispositivo da aggiornare
+ * @param color nuovo colore del dispositivo
+ */
+export const changeDeviceColor = async (
+  id: number,
+  color: string
+): Promise<IDevice> => {
+  return changeDevice("color", id, color);
 };
 
 /**
  * Funzione wrapper attorno alla funzione getAll nel namespace DeviceManager
  * @returns {Promise<IDevice[]>}
  */
-const getAllActiveDevices = async () => await DeviceManager.getAll();
+export const getAllActiveDevices = async () => await DeviceManager.getAll();
 
 /**
  * Cerca un dispositivo e ne restituisce lo stato in quel momento
  * @param id Id del dispositivo da trovare
  * @returns {DeviceState}
  */
-const getDeviceState = async (id: number) => {
+export const getDeviceState = async (id: number) => {
   let dev = await DeviceManager.findById(id);
-  return dev.state;
+  return dev._state;
 };
 
-export {
-  changeDeviceState,
-  DeviceType,
-  getAllActiveDevices,
-  getDeviceState,
-  findDeviceById
-};
+export { DeviceType };
+
+async function changeDevice(event: string, id: number, ...args) {
+  let device = createDevice(await findDeviceById(id));
+  PushEvent(`change-${event}`, device, ...args);
+  device._state = DeviceState.Busy;
+  return device;
+}

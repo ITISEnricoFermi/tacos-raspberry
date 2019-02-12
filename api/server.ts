@@ -1,7 +1,7 @@
 import socketIO from "socket.io";
 import { SubscriveToEvent } from "../config/bus";
 import DeviceManager from "../udp/manager/devices";
-import { IDevice } from "../Iot-controller/interfaces/IDevice";
+import { IDevice } from "../Iot-controller/interfaces/Device";
 
 import { server } from "./httpserver";
 import { config } from "../config/conf";

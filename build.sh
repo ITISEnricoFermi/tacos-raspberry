@@ -6,11 +6,6 @@ echo  Init submodule
 git submodule update --init --recursive --remote
 
 echo  Done
-echo  Clone submodule
-
-git submodule update
-
-echo  Done
 
 echo Building server...
 
